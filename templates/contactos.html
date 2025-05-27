@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Contactos del Equipo MOS - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+    }
+    
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header y Navegación */
+    .main-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white !important;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand .logo-circle {
+      background-color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand .logo-circle i {
+      color: var(--pepsico-blue);
+      font-size: 18px;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover,
+    .navbar-dark .navbar-nav .nav-link:focus {
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .navbar-dark .navbar-nav .nav-link.active {
+      color: white;
+      font-weight: 500;
+    }
+    
+    /* Contenido principal */
+    .main-content {
+      flex: 1;
+      padding: 30px 0;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 10px;
+    }
+    
+    /* Tarjetas de contacto */
+    .contact-card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      height: 100%;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .contact-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+    
+    .contact-header {
+      background: linear-gradient(135deg, var(--pepsico-light-blue), var(--pepsico-dark-blue));
+      padding: 20px 0;
+      text-align: center;
+      position: relative;
+    }
+    
+    .contact-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 5px solid white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      object-fit: cover;
+      margin: 0 auto;
+      display: block;
+      position: relative;
+      z-index: 2;
+      background-color: #fff;
+    }
+    
+    .contact-content {
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .contact-name {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--pepsico-blue);
+      margin-bottom: 5px;
+    }
+    
+    .contact-position {
+      color: var(--dark-gray);
+      margin-bottom: 15px;
+      font-weight: 500;
+    }
+    
+    .contact-region {
+      display: inline-block;
+      background-color: var(--light-gray);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 15px;
+    }
+    
+    .contact-detail {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 8px 10px;
+      background-color: var(--light-gray);
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    
+    .contact-detail:hover {
+      background-color: var(--medium-gray);
+    }
+    
+    .contact-detail i {
+      color: var(--pepsico-blue);
+      font-size: 1.1rem;
+      margin-right: 10px;
+      min-width: 20px;
+      text-align: center;
+    }
+    
+    .contact-detail span {
+      font-size: 0.9rem;
+      color: var(--dark-gray);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    
+    .contact-actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    
+    .contact-btn {
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    
+    .contact-btn i {
+      margin-right: 6px;
+    }
+    
+    .contact-btn.email {
+      background-color: var(--pepsico-light-blue);
+      color: white;
+    }
+    
+    .contact-btn.email:hover {
+      background-color: var(--pepsico-blue);
+    }
+    
+    .contact-btn.phone {
+      background-color: var(--sabritas-yellow);
+      color: var(--dark-gray);
+    }
+    
+    .contact-btn.phone:hover {
+      background-color: #e9c100;
+    }
+    
+    /* Filtros */
+    .filters-container {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 15px 20px;
+      margin-bottom: 30px;
+    }
+    
+    .filters-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .filters-title i {
+      margin-right: 8px;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .filter-item {
+      flex: 1;
+      min-width: 150px;
+    }
+    
+    .filter-label {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 5px;
+      color: var(--dark-gray);
+    }
+    
+    /* Botón para agregar contacto */
+    .add-contact-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--pepsico-blue);
+      color: white;
+      border: none;
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    
+    .add-contact-btn:hover {
+      transform: scale(1.1);
+      background-color: var(--pepsico-dark-blue);
+    }
+    
+    /* Modal para agregar/editar contacto */
+    .modal-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      color: white;
+    }
+    
+    .custom-file-upload {
+      border: 2px dashed #ccc;
+      border-radius: 5px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .custom-file-upload:hover {
+      border-color: var(--pepsico-blue);
+    }
+    
+    .custom-file-upload i {
+      font-size: 36px;
+      color: var(--pepsico-blue);
+      margin-bottom: 10px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .contact-card {
+        margin-bottom: 20px;
+      }
+      
+      .filter-item {
+        min-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="main-header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+          <div class="logo-circle">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          PepsiCo KPI System
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('lay_out_planta') }}">
+                <i class="fas fa-industry me-1"></i> LayOut de Planta
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('contactos') }}">
+                <i class="fas fa-address-book me-1"></i> Contactos MOS
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <div class="container">
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-address-book me-2"></i> Contactos del Equipo MOS
+        </h1>
+        <p class="text-muted">Directorio del personal de Manufacturing Operational System</p>
+      </div>
+      
+      <!-- Filtros -->
+      <div class="filters-container">
+        <div class="filters-title">
+          <i class="fas fa-filter"></i> Filtrar Contactos
+        </div>
+        <div class="filter-group">
+          <div class="filter-item">
+            <div class="filter-label">Región</div>
+            <select class="form-select" id="filterRegion">
+              <option value="all">Todas las regiones</option>
+              <option value="ANDINOS">ANDINOS</option>
+              <option value="CARICAM">CARICAM</option>
+              <option value="PBF">PBF</option>
+              <option value="PMF">PMF</option>
+              <option value="SOCO">SOCO</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <div class="filter-label">Puesto</div>
+            <select class="form-select" id="filterPosition">
+              <option value="all">Todos los puestos</option>
+              <option value="Director MOS">Director MOS</option>
+              <option value="Gerente MOS">Gerente MOS</option>
+              <option value="Coordinador MOS">Coordinador MOS</option>
+              <option value="Analista MOS">Analista MOS</option>
+              <option value="Técnico MOS">Técnico MOS</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <div class="filter-label">Búsqueda</div>
+            <input type="text" class="form-control" id="searchContact" placeholder="Buscar por nombre...">
+          </div>
+        </div>
+      </div>
+      
+      <!-- Grid de Contactos -->
+      <div class="row" id="contactsGrid">
+        <!-- Contacto 1 -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="contact-card">
+            <div class="contact-header">
+              <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Carlos Rodríguez" class="contact-image">
+            </div>
+            <div class="contact-content">
+              <h3 class="contact-name">Carlos Rodríguez</h3>
+              <div class="contact-position">Director MOS</div>
+              <span class="contact-region">
+                <i class="fas fa-map-marker-alt me-1"></i> PMF
+              </span>
+              <div class="contact-detail">
+                <i class="fas fa-phone"></i>
+                <span>+52 55 1234 5678</span>
+              </div>
+              <div class="contact-detail">
+                <i class="fas fa-envelope"></i>
+                <span>carlos.rodriguez@pepsico.com</span>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-btn email">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
+                <button class="contact-btn phone">
+                  <i class="fas fa-phone"></i> Llamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contacto 2 -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="contact-card">
+            <div class="contact-header">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Ana Martínez" class="contact-image">
+            </div>
+            <div class="contact-content">
+              <h3 class="contact-name">Ana Martínez</h3>
+              <div class="contact-position">Gerente MOS</div>
+              <span class="contact-region">
+                <i class="fas fa-map-marker-alt me-1"></i> CARICAM
+              </span>
+              <div class="contact-detail">
+                <i class="fas fa-phone"></i>
+                <span>+53 22 8765 4321</span>
+              </div>
+              <div class="contact-detail">
+                <i class="fas fa-envelope"></i>
+                <span>ana.martinez@pepsico.com</span>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-btn email">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
+                <button class="contact-btn phone">
+                  <i class="fas fa-phone"></i> Llamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contacto 3 -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="contact-card">
+            <div class="contact-header">
+              <img src="https://randomuser.me/api/portraits/men/64.jpg" alt="Luis Herrera" class="contact-image">
+            </div>
+            <div class="contact-content">
+              <h3 class="contact-name">Luis Herrera</h3>
+              <div class="contact-position">Coordinador MOS</div>
+              <span class="contact-region">
+                <i class="fas fa-map-marker-alt me-1"></i> ANDINOS
+              </span>
+              <div class="contact-detail">
+                <i class="fas fa-phone"></i>
+                <span>+57 31 9876 5432</span>
+              </div>
+              <div class="contact-detail">
+                <i class="fas fa-envelope"></i>
+                <span>luis.herrera@pepsico.com</span>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-btn email">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
+                <button class="contact-btn phone">
+                  <i class="fas fa-phone"></i> Llamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contacto 4 -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="contact-card">
+            <div class="contact-header">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Sofía Torres" class="contact-image">
+            </div>
+            <div class="contact-content">
+              <h3 class="contact-name">Sofía Torres</h3>
+              <div class="contact-position">Analista MOS</div>
+              <span class="contact-region">
+                <i class="fas fa-map-marker-alt me-1"></i> PBF
+              </span>
+              <div class="contact-detail">
+                <i class="fas fa-phone"></i>
+                <span>+55 21 8765 5432</span>
+              </div>
+              <div class="contact-detail">
+                <i class="fas fa-envelope"></i>
+                <span>sofia.torres@pepsico.com</span>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-btn email">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
+                <button class="contact-btn phone">
+                  <i class="fas fa-phone"></i> Llamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contacto 5 -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="contact-card">
+            <div class="contact-header">
+              <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Miguel Ángel Pérez" class="contact-image">
+            </div>
+            <div class="contact-content">
+              <h3 class="contact-name">Miguel Ángel Pérez</h3>
+              <div class="contact-position">Técnico MOS</div>
+              <span class="contact-region">
+                <i class="fas fa-map-marker-alt me-1"></i> SOCO
+              </span>
+              <div class="contact-detail">
+                <i class="fas fa-phone"></i>
+                <span>+56 22 4567 8901</span>
+              </div>
+              <div class="contact-detail">
+                <i class="fas fa-envelope"></i>
+                <span>miguel.perez@pepsico.com</span>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-btn email">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
+                <button class="contact-btn phone">
+                  <i class="fas fa-phone"></i> Llamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Contacto 6 -->
+        <div class="col-md-6 col-lg-4 mb-4">
+          <div class="contact-card">
+            <div class="contact-header">
+              <img src="https://randomuser.me/api/portraits/women/90.jpg" alt="Gabriela Sánchez" class="contact-image">
+            </div>
+            <div class="contact-content">
+              <h3 class="contact-name">Gabriela Sánchez</h3>
+              <div class="contact-position">Gerente MOS</div>
+              <span class="contact-region">
+                <i class="fas fa-map-marker-alt me-1"></i> PMF
+              </span>
+              <div class="contact-detail">
+                <i class="fas fa-phone"></i>
+                <span>+52 33 2345 6789</span>
+              </div>
+              <div class="contact-detail">
+                <i class="fas fa-envelope"></i>
+                <span>gabriela.sanchez@pepsico.com</span>
+              </div>
+              <div class="contact-actions">
+                <button class="contact-btn email">
+                  <i class="fas fa-envelope"></i> Email
+                </button>
+                <button class="contact-btn phone">
+                  <i class="fas fa-phone"></i> Llamar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mensaje de no resultados (oculto por defecto) -->
+      <div id="noResults" class="alert alert-info text-center" style="display: none;">
+        <i class="fas fa-search me-2"></i> No se encontraron contactos que coincidan con los filtros aplicados
+      </div>
+    </div>
+  </main>
+
+  <!-- Botón flotante para agregar contacto -->
+  <button class="add-contact-btn" data-bs-toggle="modal" data-bs-target="#addContactModal">
+    <i class="fas fa-plus"></i>
+  </button>
+
+  <!-- Modal para agregar/editar contacto -->
+  <div class="modal fade" id="addContactModal" tabindex="-1" aria-labelledby="addContactModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addContactModalLabel">
+            <i class="fas fa-user-plus me-2"></i> Agregar Nuevo Contacto
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="contactForm">
+            <div class="row">
+              <div class="col-md-4 mb-3">
+                <label for="contactPhoto" class="form-label">Foto de Perfil</label>
+                <div class="custom-file-upload" id="photoUpload">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <p class="mb-0">Haz clic aquí para subir una foto</p>
+                  <input type="file" id="contactPhoto" class="d-none" accept="image/*">
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="mb-3">
+                  <label for="contactName" class="form-label">Nombre Completo *</label>
+                  <input type="text" class="form-control" id="contactName" required>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="contactPosition" class="form-label">Puesto *</label>
+                    <select class="form-select" id="contactPosition" required>
+                      <option value="">Seleccionar puesto...</option>
+                      <option value="Director MOS">Director MOS</option>
+                      <option value="Gerente MOS">Gerente MOS</option>
+                      <option value="Coordinador MOS">Coordinador MOS</option>
+                      <option value="Analista MOS">Analista MOS</option>
+                      <option value="Técnico MOS">Técnico MOS</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="contactRegion" class="form-label">Región *</label>
+                    <select class="form-select" id="contactRegion" required>
+                      <option value="">Seleccionar región...</option>
+                      <option value="ANDINOS">ANDINOS</option>
+                      <option value="CARICAM">CARICAM</option>
+                      <option value="PBF">PBF</option>
+                      <option value="PMF">PMF</option>
+                      <option value="SOCO">SOCO</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="contactPhone" class="form-label">Teléfono *</label>
+                <input type="tel" class="form-control" id="contactPhone" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="contactEmail" class="form-label">Correo Electrónico *</label>
+                <input type="email" class="form-control" id="contactEmail" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="contactNotes" class="form-label">Notas adicionales</label>
+              <textarea class="form-control" id="contactNotes" rows="3"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            <i class="fas fa-times me-1"></i> Cancelar
+          </button>
+          <button type="button" class="btn btn-primary" id="saveContactBtn">
+            <i class="fas fa-save me-1"></i> Guardar Contacto
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-3 mt-5">
+    <div class="container">
+      <p class="mb-0">&copy; 2025 PepsiCo, Inc. Manufacturing Operational System</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Arreglo de contactos (simulado)
+      const contacts = [
+        {
+          id: 1,
+          name: 'Carlos Rodríguez',
+          position: 'Director MOS',
+          region: 'PMF',
+          phone: '+52 55 1234 5678',
+          email: 'carlos.rodriguez@pepsico.com',
+          photo: 'https://randomuser.me/api/portraits/men/32.jpg'
+        },
+        {
+          id: 2,
+          name: 'Ana Martínez',
+          position: 'Gerente MOS',
+          region: 'CARICAM',
+          phone: '+53 22 8765 4321',
+          email: 'ana.martinez@pepsico.com',
+          photo: 'https://randomuser.me/api/portraits/women/44.jpg'
+        },
+        {
+          id: 3,
+          name: 'Luis Herrera',
+          position: 'Coordinador MOS',
+          region: 'ANDINOS',
+          phone: '+57 31 9876 5432',
+          email: 'luis.herrera@pepsico.com',
+          photo: 'https://randomuser.me/api/portraits/men/64.jpg'
+        },
+        {
+          id: 4,
+          name: 'Sofía Torres',
+          position: 'Analista MOS',
+          region: 'PBF',
+          phone: '+55 21 8765 5432',
+          email: 'sofia.torres@pepsico.com',
+          photo: 'https://randomuser.me/api/portraits/women/68.jpg'
+        },
+        {
+          id: 5,
+          name: 'Miguel Ángel Pérez',
+          position: 'Técnico MOS',
+          region: 'SOCO',
+          phone: '+56 22 4567 8901',
+          email: 'miguel.perez@pepsico.com',
+          photo: 'https://randomuser.me/api/portraits/men/75.jpg'
+        },
+        {
+          id: 6,
+          name: 'Gabriela Sánchez',
+          position: 'Gerente MOS',
+          region: 'PMF',
+          phone: '+52 33 2345 6789',
+          email: 'gabriela.sanchez@pepsico.com',
+          photo: 'https://randomuser.me/api/portraits/women/90.jpg'
+        }
+      ];
+      
+      // Elementos DOM para filtros
+      const filterRegion = document.getElementById('filterRegion');
+      const filterPosition = document.getElementById('filterPosition');
+      const searchContact = document.getElementById('searchContact');
+      const contactsGrid = document.getElementById('contactsGrid');
+      const noResults = document.getElementById('noResults');
+      
+      // Elementos del formulario
+      const contactForm = document.getElementById('contactForm');
+      const saveContactBtn = document.getElementById('saveContactBtn');
+      const photoUpload = document.getElementById('photoUpload');
+      const contactPhoto = document.getElementById('contactPhoto');
+      
+      // Filtrar contactos
+      function filterContacts() {
+        const regionFilter = filterRegion.value;
+        const positionFilter = filterPosition.value;
+        const searchFilter = searchContact.value.toLowerCase();
+        
+        let filteredContacts = contacts;
+        
+        // Filtrar por región
+        if (regionFilter !== 'all') {
+          filteredContacts = filteredContacts.filter(contact => contact.region === regionFilter);
+        }
+        
+        // Filtrar por puesto
+        if (positionFilter !== 'all') {
+          filteredContacts = filteredContacts.filter(contact => contact.position === positionFilter);
+        }
+        
+        // Filtrar por búsqueda
+        if (searchFilter) {
+          filteredContacts = filteredContacts.filter(contact => 
+            contact.name.toLowerCase().includes(searchFilter) || 
+            contact.email.toLowerCase().includes(searchFilter)
+          );
+        }
+        
+        // Mostrar contactos filtrados
+        renderContacts(filteredContacts);
+      }
+      
+      // Renderizar contactos en el grid
+      function renderContacts(contactsList) {
+        contactsGrid.innerHTML = '';
+        
+        if (contactsList.length === 0) {
+          noResults.style.display = 'block';
+          return;
+        }
+        
+        noResults.style.display = 'none';
+        
+        contactsList.forEach(contact => {
+          const contactCard = document.createElement('div');
+          contactCard.className = 'col-md-6 col-lg-4 mb-4';
+          contactCard.innerHTML = `
+            <div class="contact-card" data-id="${contact.id}">
+              <div class="contact-header">
+                <img src="${contact.photo}" alt="${contact.name}" class="contact-image">
+              </div>
+              <div class="contact-content">
+                <h3 class="contact-name">${contact.name}</h3>
+                <div class="contact-position">${contact.position}</div>
+                <span class="contact-region">
+                  <i class="fas fa-map-marker-alt me-1"></i> ${contact.region}
+                </span>
+                <div class="contact-detail">
+                  <i class="fas fa-phone"></i>
+                  <span>${contact.phone}</span>
+                </div>
+                <div class="contact-detail">
+                  <i class="fas fa-envelope"></i>
+                  <span>${contact.email}</span>
+                </div>
+                <div class="contact-actions">
+                  <button class="contact-btn email" onclick="sendEmail('${contact.email}')">
+                    <i class="fas fa-envelope"></i> Email
+                  </button>
+                  <button class="contact-btn phone" onclick="callPhone('${contact.phone}')">
+                    <i class="fas fa-phone"></i> Llamar
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          contactsGrid.appendChild(contactCard);
+        });
+      }
+      
+      // Funciones para manejar acciones de contacto
+      function sendEmail(email) {
+        window.location.href = `mailto:${email}`;
+      }
+      
+      function callPhone(phone) {
+        // Limpiar el número para el enlace tel:
+        const cleanPhone = phone.replace(/\s+/g, '');
+        window.location.href = `tel:${cleanPhone}`;
+      }
+      
+      // Manejar subida de fotos
+      photoUpload.addEventListener('click', function() {
+        contactPhoto.click();
+      });
+      
+      contactPhoto.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+          const reader = new FileReader();
+          
+          reader.onload = function(e) {
+            photoUpload.innerHTML = `
+              <img src="${e.target.result}" alt="Preview" style="max-width: 100%; max-height: 150px; border-radius: 5px;">
+              <p class="mt-2 mb-0">Haz clic para cambiar</p>
+            `;
+          }
+          
+          reader.readAsDataURL(e.target.files[0]);
+        }
+      });
+      
+      // Manejar guardado de contactos
+      saveContactBtn.addEventListener('click', function() {
+        // Verificar validación del formulario
+        if (!contactForm.checkValidity()) {
+          // Mostrar validaciones nativas del navegador
+          contactForm.reportValidity();
+          return;
+        }
+        
+        // Simulamos la adición de un nuevo contacto (en una app real, esto enviaría datos al servidor)
+        const newContact = {
+          id: contacts.length + 1,
+          name: document.getElementById('contactName').value,
+          position: document.getElementById('contactPosition').value,
+          region: document.getElementById('contactRegion').value,
+          phone: document.getElementById('contactPhone').value,
+          email: document.getElementById('contactEmail').value,
+          photo: document.getElementById('contactPhoto').files.length > 0 
+            ? URL.createObjectURL(document.getElementById('contactPhoto').files[0])
+            : 'https://randomuser.me/api/portraits/lego/1.jpg'  // Foto por defecto
+        };
+        
+        // Agregar al array (simular guardado)
+        contacts.push(newContact);
+        
+        // Volver a renderizar los contactos
+        filterContacts();
+        
+        // Cerrar el modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('addContactModal'));
+        modal.hide();
+        
+        // Resetear el formulario
+        contactForm.reset();
+        photoUpload.innerHTML = `
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p class="mb-0">Haz clic aquí para subir una foto</p>
+        `;
+        
+        // Mostrar notificación de éxito
+        showNotification('Contacto agregado correctamente', 'success');
+      });
+      
+      // Función para mostrar notificaciones
+      function showNotification(message, type = 'info') {
+        // Crear elemento de notificación
+        const notification = document.createElement('div');
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.top = '20px';
+        notification.style.right = '20px';
+        notification.style.zIndex = '9999';
+        notification.style.minWidth = '300px';
+        notification.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        
+        notification.innerHTML = `
+          <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-info-circle'} me-2"></i>
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        // Agregar al body
+        document.body.appendChild(notification);
+        
+        // Autocierre después de 3 segundos
+        setTimeout(() => {
+          notification.remove();
+        }, 3000);
+      }
+      
+      // Eventos para filtrado
+      filterRegion.addEventListener('change', filterContacts);
+      filterPosition.addEventListener('change', filterContacts);
+      searchContact.addEventListener('input', filterContacts);
+      
+      // Cargar contactos iniciales
+      renderContacts(contacts);
+      
+      // Funcionalidad editar/eliminar contacto (delegación de eventos)
+      contactsGrid.addEventListener('click', function(e) {
+        // Detectar clics en tarjetas de contacto para edición
+        const contactCard = e.target.closest('.contact-card');
+        if (contactCard && e.target.classList.contains('edit-contact')) {
+          const contactId = contactCard.dataset.id;
+          const contact = contacts.find(c => c.id == contactId);
+          
+          if (contact) {
+            // Aquí iría el código para cargar los datos en el modal para edición
+            console.log('Editar contacto:', contact);
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+      --success-green: #28a745;
+      --danger-red: #dc3545;
+      --warning-yellow: #ffc107;
+    }
+    
+    body { 
+      background-color: var(--light-gray); 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+    
+    /* Header y Navegación */
+    .admin-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    
+    .admin-header h2 {
+      margin: 0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-header h2 i {
+      margin-right: 10px;
+    }
+    
+    /* Tablas */
+    .table {
+      margin-bottom: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    
+    .table thead th {
+      background-color: var(--pepsico-blue);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px 15px;
+      white-space: nowrap;
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(3, 87, 160, 0.05);
+    }
+    
+    /* Pestaña activa */
+    .nav-tabs .nav-link.active {
+      border-top: 3px solid var(--pepsico-blue);
+      border-bottom: none;
+      font-weight: 600;
+    }
+    
+    /* Nuevo diseño de tarjetas */
+    .metrics-card {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .metrics-card .title {
+      color: var(--dark-gray);
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+    
+    .metrics-card .value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--pepsico-blue);
+      margin-bottom: 5px;
+    }
+    
+    .metrics-card .trend {
+      font-size: 0.85rem;
+      color: var(--success-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .metrics-card .trend.negative {
+      color: var(--danger-red);
+    }
+    
+    .metrics-card .trend i {
+      margin-right: 5px;
+    }
+    
+    /* Status panel lateral */
+    .status-sidebar {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+    }
+    
+    .status-header {
+      background-color: var(--pepsico-blue);
+      color: white;
+      padding: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .status-header i {
+      margin-right: 10px;
+    }
+    
+    .status-summary {
+      display: flex;
+      justify-content: space-around;
+      padding: 15px;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    .status-item {
+      text-align: center;
+    }
+    
+    .status-value {
+      font-size: 1.8rem;
+      font-weight: 700;
+      display: block;
+      line-height: 1;
+    }
+    
+    .status-label {
+      font-size: 0.75rem;
+      color: var(--dark-gray);
+    }
+    
+    .status-value.blue { color: var(--pepsico-blue); }
+    .status-value.green { color: var(--success-green); }
+    .status-value.red { color: var(--danger-red); }
+    
+    .plant-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
+    }
+    
+    .plant-item {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eaeaea;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.2s;
+    }
+    
+    .plant-item:hover {
+      background-color: var(--light-gray);
+    }
+    
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+    
+    .status-dot.loaded {
+      background-color: var(--success-green);
+      box-shadow: 0 0 5px var(--success-green);
+    }
+    
+    .status-dot.not-loaded {
+      background-color: var(--danger-red);
+      box-shadow: 0 0 5px var(--danger-red);
+    }
+    
+    .plant-info {
+      flex: 1;
+    }
+    
+    .plant-name {
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+    
+    .plant-bu {
+      font-size: 0.75rem;
+      color: var(--dark-gray);
+    }
+    
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    /* Filtros */
+    .filters-container {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      padding: 15px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+    }
+    
+    .filter-group label {
+      margin-right: 8px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    /* Líneas y KPI cards */
+    .line-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      height: 100%;
+    }
+
+    .line-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .line-card.loaded {
+      border-color: var(--success-green);
+    }
+
+    .line-card.not-loaded {
+      border-color: var(--danger-red);
+    }
+
+    .line-card .card-header {
+      padding: 10px 15px;
+      border-bottom: 1px solid #eee;
+      font-weight: 600;
+    }
+
+    .line-card.loaded .card-header {
+      background-color: rgba(40, 167, 69, 0.1);
+    }
+
+    .line-card.not-loaded .card-header {
+      background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .line-detail-table th {
+      width: 40%;
+      background-color: #f8f9fa;
+    }
+
+    .kpi-progress {
+      height: 8px;
+      margin-top: 5px;
+    }
+
+    .modal-back-button {
+      cursor: pointer;
+      color: var(--pepsico-blue);
+      font-weight: 500;
+    }
+
+    .modal-back-button:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h2><i class="fas fa-cogs"></i> Panel de Administración</h2>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="{{ url_for('logout') }}" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-info-circle me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Contenido principal con navegación por pestañas -->
+    <div class="row">
+      <!-- Panel lateral con status de carga -->
+      <div class="col-lg-3 col-md-4 mb-4">
+        <div class="status-sidebar">
+          <div class="status-header">
+            <i class="fas fa-tasks"></i> Status de Carga
+          </div>
+          
+          <div class="status-summary">
+            <div class="status-item">
+              <span class="status-value blue">{{ plants_status.total }}</span>
+              <span class="status-label">Total</span>
+            </div>
+            <div class="status-item">
+              <span class="status-value green">{{ plants_status.loaded }}</span>
+              <span class="status-label">Cargadas</span>
+            </div>
+            <div class="status-item">
+              <span class="status-value red">{{ plants_status.not_loaded }}</span>
+              <span class="status-label">Pendientes</span>
+            </div>
+          </div>
+          
+          <ul class="plant-list">
+            {% for plant in plants_status.details %}
+            <li class="plant-item">
+              <div class="status-dot {% if plant.loaded %}loaded{% else %}not-loaded{% endif %}"></div>
+              <div class="plant-info">
+                <div class="plant-name">{{ plant.plant }}</div>
+                <div class="plant-bu">{{ plant.bu }}</div>
+              </div>
+              <span class="status-badge {% if plant.loaded %}bg-success{% else %}bg-danger{% endif %}">
+                {% if plant.loaded %}Cargado{% else %}Pendiente{% endif %}
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+
+<!-- Contenido principal -->
+<div class="col-lg-9 col-md-8">
+  <!-- Navegación por pestañas -->
+  <ul class="nav nav-tabs mb-4" id="adminTab" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="kpis-tab" data-bs-toggle="tab" data-bs-target="#kpis" type="button" role="tab">
+        <i class="fas fa-chart-line me-1"></i> KPIs
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="usuarios-tab" data-bs-toggle="tab" data-bs-target="#usuarios" type="button" role="tab">
+        <i class="fas fa-users me-1"></i> Usuarios
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="layout-tab" data-bs-toggle="tab" data-bs-target="#layout" type="button" role="tab">
+        <i class="fas fa-industry me-1"></i> Consulta de Lay Out
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="config-tab" data-bs-toggle="tab" data-bs-target="#config" type="button" role="tab">
+        <i class="fas fa-cog me-1"></i> Configuración
+      </button>
+    </li>
+  </ul>
+  
+  <div class="tab-content" id="adminTabContent">
+    <!-- Tab 1: KPIs -->
+    <div class="tab-pane fade show active" id="kpis" role="tabpanel">
+     
+      <h5 class="mb-3">Monitoreo de KPIs por Planta</h5>
+      
+      <!-- Filtros -->
+      <div class="filters-container">
+        <div class="filter-group">
+          <label for="kpiBU">BU:</label>
+          <select id="kpiBU" class="form-select">
+            <option value="TODOS">Todos</option>
+            {% for bu in ["ANDINOS", "CARICAM", "PBF", "PMF", "SOCO"] %}
+              <option value="{{ bu }}" {% if current_bu == bu %}selected{% endif %}>{{ bu }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="kpiMonth">Mes:</label>
+          <select id="kpiMonth" class="form-select">
+            {% for num, mes in [(1,"Enero"),(2,"Febrero"),(3,"Marzo"),(4,"Abril"),(5,"Mayo"),(6,"Junio"),(7,"Julio"),(8,"Agosto"),(9,"Septiembre"),(10,"Octubre"),(11,"Noviembre"),(12,"Diciembre")] %}
+              <option value="{{ num }}" {% if current_month == num %}selected{% endif %}>{{ mes }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="kpiYear">Año:</label>
+          <select id="kpiYear" class="form-select">
+            {% for year in range(2023, 2026) %}
+              <option value="{{ year }}" {% if current_year == year %}selected{% endif %}>{{ year }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button id="filterKpiBtn" class="btn btn-primary">
+          <i class="fas fa-filter me-1"></i> Filtrar
+        </button>
+        <!-- Agregar al archivo admin_panel.html, justo después del botón de filtrar en la sección de KPIs -->
+<button id="downloadKpiBtn" class="btn btn-success ms-2">
+  <i class="fas fa-file-excel me-1"></i> Descargar Reporte
+</button>
+
+<!-- Modal para seleccionar filtros de descarga -->
+<div class="modal fade" id="downloadModal" tabindex="-1" aria-labelledby="downloadModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="downloadModalLabel">
+          <i class="fas fa-file-excel me-2"></i> Descargar Reporte de KPIs
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="downloadForm">
+          <div class="mb-3">
+            <label for="downloadBU" class="form-label">Negocio (BU):</label>
+            <select id="downloadBU" class="form-select">
+              <option value="TODOS">Todos</option>
+              {% for bu in ["ANDINOS", "CARICAM", "PBF", "PMF", "SOCO"] %}
+                <option value="{{ bu }}">{{ bu }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label for="downloadYear" class="form-label">Año:</label>
+            <select id="downloadYear" class="form-select">
+              {% for year in range(2023, 2026) %}
+                <option value="{{ year }}" {% if current_year == year %}selected{% endif %}>{{ year }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Meses (seleccione uno o más):</label>
+            <div class="row">
+              {% for num, mes in [(1,"Enero"),(2,"Febrero"),(3,"Marzo"),(4,"Abril"),(5,"Mayo"),(6,"Junio"),(7,"Julio"),(8,"Agosto"),(9,"Septiembre"),(10,"Octubre"),(11,"Noviembre"),(12,"Diciembre")] %}
+                <div class="col-md-4 mb-2">
+                  <div class="form-check">
+                    <input class="form-check-input download-month" type="checkbox" value="{{ num }}" id="month{{ num }}" {% if current_month == num %}checked{% endif %}>
+                    <label class="form-check-label" for="month{{ num }}">
+                      {{ mes }}
+                    </label>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <div id="downloadAlert" class="alert alert-danger" style="display: none;">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span id="downloadAlertMessage"></span>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-1"></i> Cancelar
+        </button>
+        <button type="button" class="btn btn-success" id="confirmDownloadBtn">
+          <i class="fas fa-download me-1"></i> Descargar Excel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+      </div>
+      
+      
+      <!-- Métricas KPI -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="metrics-card">
+            <div class="title">Ef. Promedio Pesadora</div>
+            <div class="value">{{ "%.1f"|format(kpi_metrics.avg_pesadora) }}%</div>
+            <div class="trend {% if kpi_metrics.trend_pesadora < 0 %}negative{% endif %}">
+              <i class="fas {% if kpi_metrics.trend_pesadora >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+              {{ "%.1f"|format(kpi_metrics.trend_pesadora|abs) }}%
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="metrics-card">
+            <div class="title">Ef. Promedio Empaque</div>
+            <div class="value">{{ "%.1f"|format(kpi_metrics.avg_empaque) }}%</div>
+            <div class="trend {% if kpi_metrics.trend_empaque < 0 %}negative{% endif %}">
+              <i class="fas {% if kpi_metrics.trend_empaque >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+              {{ "%.1f"|format(kpi_metrics.trend_empaque|abs) }}%
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="metrics-card">
+            <div class="title">Ef. Promedio DME</div>
+            <div class="value">{{ "%.1f"|format(kpi_metrics.avg_dme) }}%</div>
+            <div class="trend {% if kpi_metrics.trend_dme < 0 %}negative{% endif %}">
+              <i class="fas {% if kpi_metrics.trend_dme >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+              {{ "%.1f"|format(kpi_metrics.trend_dme|abs) }}%
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="metrics-card">
+            <div class="title">Sobre Grameaje Promedio</div>
+            <div class="value">{{ "%.1f"|format(kpi_metrics.avg_gramaje) }}%</div>
+            <div class="trend {% if kpi_metrics.trend_gramaje > 0 %}negative{% endif %}">
+              <i class="fas {% if kpi_metrics.trend_gramaje <= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+              {{ "%.1f"|format(kpi_metrics.trend_gramaje|abs) }}%
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tabla de KPIs por planta - MODIFICADA con nuevo botón ver -->
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Planta</th>
+              <th>BU</th>
+              <th>Usuario</th>
+              <th>Fecha Carga</th>
+              <th>Ef. Pesadora</th>
+              <th>Ef. Empaque</th>
+              <th>Ef. DME</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for k in kpis_by_plant %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="status-dot {% if k.has_data %}loaded{% else %}not-loaded{% endif %} me-2"></div>
+                  <span>{{ k.plant }}</span>
+                  {% if k.has_data and k.has_comments %}
+                    <span class="badge bg-info ms-2" title="Tiene comentarios">
+                      <i class="fas fa-comment-dots"></i>
+                    </span>
+                  {% endif %}
+                </div>
+              </td>
+              <td>{{ k.bu }}</td>
+              <td>{{ k.username }}</td>
+              <td>
+                {% if k.has_data %}
+                  {{ k.fecha_carga }}
+                {% else %}
+                  <span class="badge bg-danger">No Cargado</span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                {% if k.has_data %}
+                  <span class="badge {% if k.eficiencia_pesadora >= 85 %}bg-success{% elif k.eficiencia_pesadora >= 70 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                    {{ "%.1f"|format(k.eficiencia_pesadora) }}%
+                  </span>
+                {% else %}
+                  <span>-</span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                {% if k.has_data %}
+                  <span class="badge {% if k.eficiencia_empaque >= 85 %}bg-success{% elif k.eficiencia_empaque >= 70 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                    {{ "%.1f"|format(k.eficiencia_empaque) }}%
+                  </span>
+                {% else %}
+                  <span>-</span>
+                {% endif %}
+              </td>
+              <td class="text-center">
+                {% if k.has_data %}
+                  <span class="badge {% if k.eficiencia_dme >= 85 %}bg-success{% elif k.eficiencia_dme >= 70 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                    {{ "%.1f"|format(k.eficiencia_dme) }}%
+                  </span>
+                {% else %}
+                  <span>-</span>
+                {% endif %}
+              </td>
+              <td>
+                {% if k.has_data %}
+                  <!-- Nuevo botón Ver que llama a la función de mostrar líneas -->
+                  <button class="btn btn-sm btn-outline-primary me-1" type="button" onclick="mostrarLineasPlanta('{{ k.plant }}', '{{ k.bu }}', {{ current_month }}, {{ current_year }})">
+                    <i class="fas fa-eye me-1"></i> Ver
+                  </button>
+                  <button class="btn btn-sm {% if k.has_comments %}btn-info text-white{% else %}btn-outline-info{% endif %}" type="button" onclick="showComments('{{ k.user_id }}', '{{ current_month }}', '{{ current_year }}', '{{ k.plant }}', '{{ k.bu }}', '{{ k.id if k.id else 0 }}')">
+                    <i class="fas {% if k.has_comments %}fa-comment-dots{% else %}fa-comment{% endif %} me-1"></i> Comentarios
+                  </button>
+                {% else %}
+                  <button class="btn btn-sm btn-outline-secondary" disabled>
+                    <i class="fas fa-eye-slash me-1"></i> N/A
+                  </button>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- Fin de la tabla KPIs --> 
+    </div>
+    
+    <!-- Tab 2: Usuarios -->
+    <div class="tab-pane fade" id="usuarios" role="tabpanel">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0">Administración de Usuarios</h5>
+        <a href="{{ url_for('register') }}" class="btn btn-success btn-sm">
+          <i class="fas fa-user-plus me-1"></i> Registrar Nuevo
+        </a>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Usuario</th>
+              <th>BU</th>
+              <th>Planta</th>
+              <th>Rol</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in users %}
+            <tr>
+              <td>{{ u.id }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-user-circle fs-4 me-2 text-secondary"></i>
+                  <span>{{ u.username }}</span>
+                </div>
+              </td>
+              <td>{{ u.bu or 'No asignado' }}</td>
+              <td>{{ u.plant or 'No asignado' }}</td>
+              <td>
+                {% if u.is_admin %}
+                  <span class="badge bg-primary">Administrador</span>
+                {% else %}
+                  <span class="badge bg-secondary">Usuario</span>
+                {% endif %}
+              </td>
+              <td>
+                <a href="{{ url_for('edit_user', user_id=u.id) }}" class="btn btn-warning btn-sm">
+                  <i class="fas fa-edit me-1"></i> Editar
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <!-- Tab 3: Consulta de Lay Out -->
+    <div class="tab-pane fade" id="layout" role="tabpanel">
+      <h5 class="mb-3">Consulta de Lay Out por Planta</h5>
+      
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>BU</th>
+              <th>Planta</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in lay_outs %}
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-building me-2 text-secondary"></i>
+                  <span>{{ item.bu }}</span>
+                </div>
+              </td>
+              <td>{{ item.plant }}</td>
+              <td>
+                <button class="btn btn-info btn-sm" onclick="mostrarLayOut('{{ item.bu }}', '{{ item.plant }}')">
+                  <i class="fas fa-info-circle me-1"></i> Ver Información
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <!-- Div para detalles de Lay Out -->
+      <div id="layOutDetalle" class="mt-4"></div>
+    </div>
+    <!-- Tab 4: Configuración del Sistema -->
+<div class="tab-pane fade" id="config" role="tabpanel">
+  <h5 class="mb-3">Configuración del Sistema</h5>
+  
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <i class="fas fa-calendar-alt me-2"></i> Fechas Límite para Carga de KPIs
+    </div>
+    <div class="card-body">
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i> Configure el día límite de cada mes hasta el cual los usuarios pueden cargar datos de KPIs. Después de esta fecha, se mostrará una advertencia al intentar cargar nuevos datos.
+      </div>
+      
+      <form id="limitDateForm" class="mb-3">
+        <div class="row mb-3 align-items-end">
+          <div class="col-md-6">
+            <label for="limitDay" class="form-label">Día límite de cada mes:</label>
+            <input type="number" id="limitDay" class="form-control" min="1" max="31" value="{{ deadline_day }}" required>
+          </div>
+          <div class="col-md-6">
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i> Guardar Configuración
+            </button>
+          </div>
+        </div>
+      </form>
+      
+      <div id="dateConfigResult"></div>
+      
+      <div class="card bg-light">
+        <div class="card-body">
+          <h6 class="card-title">Información Actual</h6>
+          <p>Fecha límite configurada: <strong>Día {{ deadline_day }} de cada mes</strong></p>
+          <p>Fecha límite del mes actual: <strong id="currentDeadline">{{ deadline_formatted }}</strong></p>
+          <p>Estado: 
+            <span id="deadlineStatus" class="badge {% if deadline_passed %}bg-danger{% else %}bg-success{% endif %}">
+              {% if deadline_passed %}Fecha límite superada{% else %}Dentro del plazo{% endif %}
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
+</div>
+</div>
+</div>
+
+<!-- Modal para comentarios -->
+<div class="modal fade" id="commentsModal" tabindex="-1" aria-labelledby="commentsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="commentsModalLabel">
+          <i class="fas fa-comment me-2"></i> Comentarios KPI - <span id="commentModalPlant"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="comment_kpi_id">
+        <input type="hidden" id="comment_user_id">
+        <input type="hidden" id="comment_month">
+        <input type="hidden" id="comment_year">
+
+        <div class="mb-3">
+          <label for="packing_efficiency_comment" class="form-label">
+            <i class="fas fa-box me-1 text-primary"></i> Packing Efficiency
+          </label>
+          <textarea class="form-control" id="packing_efficiency_comment" rows="3" placeholder="Comentarios sobre la eficiencia de empaque"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="material_waste_comment" class="form-label">
+            <i class="fas fa-recycle me-1 text-warning"></i> Material Waste
+          </label>
+          <textarea class="form-control" id="material_waste_comment" rows="3" placeholder="Comentarios sobre desperdicio de material"></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label for="giveaway_comment" class="form-label">
+            <i class="fas fa-gift me-1 text-danger"></i> Giveaway
+          </label>
+          <textarea class="form-control" id="giveaway_comment" rows="3" placeholder="Comentarios sobre giveaway"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div id="commentStatus" class="text-success me-auto" style="display: none;">
+          <i class="fas fa-check-circle me-1"></i> <span id="commentStatusMessage">Comentarios guardados correctamente</span>
+        </div>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-1"></i> Cerrar
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveComments()">
+          <i class="fas fa-save me-1"></i> Guardar Comentarios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NUEVO: Modal para mostrar líneas de planta -->
+<!-- Reemplazar la definición del modal con esta versión corregida -->
+<div class="modal fade" id="lineasPlantaModal" tabindex="-1" aria-labelledby="lineasPlantaModalLabel">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="lineasPlantaModalLabel">
+          <i class="fas fa-industry me-2"></i> Líneas para <span id="modalPlantaName"></span>
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="loadingLineas" class="text-center py-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-2">Cargando información de líneas...</p>
+        </div>
+        
+        <div id="lineasList" class="row g-3 mb-4" style="display: none;">
+          <!-- Líneas se cargarán aquí dinámicamente -->
+        </div>
+        
+        <div id="lineaDetails" style="display: none;">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="mb-0">
+              <i class="fas fa-tachometer-alt me-2"></i>
+              Detalles de KPI - <span id="lineaDetailsName"></span>
+            </h6>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="volverALineas()">
+              <i class="fas fa-arrow-left me-1"></i> Volver a líneas
+            </button>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+              <tbody id="lineaDetailsTable">
+                <!-- Detalles de KPI se cargarán aquí -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          <i class="fas fa-times me-1"></i> Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Función para mostrar el estado del comentario
+function showCommentStatus(message, isSuccess = true) {
+  const statusEl = document.getElementById('commentStatus');
+  const messageEl = document.getElementById('commentStatusMessage');
+  messageEl.textContent = message;
+  statusEl.className = isSuccess ? 'text-success me-auto' : 'text-danger me-auto';
+  statusEl.style.display = 'block';
+
+  // Ocultar después de 3 segundos
+  setTimeout(() => {
+    statusEl.style.display = 'none';
+  }, 3000);
+}
+
+// Función para consultar datos de Lay Out de un BU y Planta
+function mostrarLayOut(bu, plant) {
+  // Mostrar indicador de carga
+  document.getElementById('layOutDetalle').innerHTML = `
+    <div class="d-flex justify-content-center my-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Cargando...</span>
+      </div>
+    </div>
+  `;
+
+
+  // Codificar correctamente los parámetros
+  var url = "{{ url_for('get_lay_out_info') }}";
+  url += "?bu=" + encodeURIComponent(bu) + "&plant=" + encodeURIComponent(plant);
+
+  fetch(url)
+    .then(response => {
+      if (!response.ok) {
+        return response.text().then(text => {
+          console.error("Respuesta del servidor (error):", text);
+          throw new Error('Error del servidor: ' + response.status);
+        });
+      }
+      return response.json();
+    })
+    .then(data => {
+      var container = document.getElementById('layOutDetalle');
+      if(data.error){
+        container.innerHTML = `
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i> ${data.error}
+          </div>
+        `;
+        return;
+      }
+      if(!data || data.length === 0){
+        container.innerHTML = `
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle me-2"></i> No se encontraron registros para BU: ${bu} y Planta: ${plant}
+          </div>
+        `;
+        return;
+      }
+
+      // Calcular estadísticas para el resumen
+      const totalEquipos = data.length;
+      const equiposAutomaticos = data.filter(item => item.categoria === 'Automatico').length;
+      const equiposManuales = data.filter(item => item.categoria === 'Manual').length;
+
+      let html = `
+        <div class="card mb-4">
+          <div class="card-header bg-primary text-white">
+            <i class="fas fa-industry me-2"></i> Registros para BU: ${bu} - Planta: ${plant}
+          </div>
+          <div class="card-body">
+            <!-- Resumen Estadístico -->
+            <div class="card mb-3 bg-light">
+              <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-chart-pie me-2"></i>Resumen</h6>
+                <div class="row text-center">
+                  <div class="col-md-4">
+                    <div class="mb-2">
+                      <span class="fs-1 fw-bold text-primary">${totalEquipos}</span>
+                    </div>
+                    <div>Total de Equipos</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-2">
+                      <span class="fs-1 fw-bold text-success">${equiposAutomaticos}</span>
+                    </div>
+                    <div>Equipos Automáticos</div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="mb-2">
+                      <span class="fs-1 fw-bold text-warning">${equiposManuales}</span>
+                    </div>
+                    <div>Equipos Manuales</div>
+                  </div>
+                </div>
+                <!-- Barra de progreso para visualizar proporción -->
+                <div class="progress mt-3" style="height: 25px;">
+                  <div class="progress-bar bg-success" role="progressbar" 
+                       style="width: ${(equiposAutomaticos/totalEquipos)*100}%" 
+                       aria-valuenow="${equiposAutomaticos}" aria-valuemin="0" aria-valuemax="${totalEquipos}">
+                    ${Math.round((equiposAutomaticos/totalEquipos)*100)}% Automáticos
+                  </div>
+                  <div class="progress-bar bg-warning" role="progressbar" 
+                       style="width: ${(equiposManuales/totalEquipos)*100}%" 
+                       aria-valuenow="${equiposManuales}" aria-valuemin="0" aria-valuemax="${totalEquipos}">
+                    ${Math.round((equiposManuales/totalEquipos)*100)}% Manuales
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Usuario</th>
+                    <th>Categoría</th>
+                    <th>Línea</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Pesadora</th>
+                    <th>Empacadora</th>
+                    <th>HIGH SPEED</th>
+                    <th>LOW SPEED</th>
+                    <th>SEAL CHECKER</th>
+                    <th>DACS</th>
+                    <th>RCC</th>
+                    <th>TERMA - TIRA SEMI AUTO</th>
+                    <th>FESTO</th>
+                    <th>HANCO</th>
+                    <th>GUACP</th>
+                    <th>PKG MANUAL</th>
+                    <th>PKG AUTO</th>
+                    <th>Pallet Auto</th>
+                    <th>NÚMERO DA EA</th>
+                    <th>Pesadoras Integrado con M.E.S.</th>
+                    <th>Guacp Integrado con M.E.S.</th>
+                    <th>Estatus Revisado</th>
+                    <th>*****</th>
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+        
+        data.forEach(function(item) {
+          html += `
+            <tr>
+              <td>${item.user || "N/A"}</td>
+              <td>
+                <span class="badge ${item.categoria === 'Automatico' ? 'bg-success' : 'bg-warning text-dark'}">
+                  ${item.categoria || "N/A"}
+                </span>
+              </td>
+              <td>${item.linea || "N/A"}</td>
+              <td>${item.marca || "N/A"}</td>
+              <td>${item.modelo || "N/A"}</td>
+              <td>${item.pesadora || "N/A"}</td>
+              <td>${item.empacadora || "N/A"}</td>
+              <td>${item.high_speed || "N/A"}</td>
+              <td>${item.low_speed || "N/A"}</td>
+              <td>${item.seal_checker || "N/A"}</td>
+              <td>${item.dacs || "N/A"}</td>
+              <td>${item.rcc || "N/A"}</td>
+              <td>${item.terma_tira_semi_auto || "N/A"}</td>
+              <td>${item.festo || "N/A"}</td>
+              <td>${item.hanco || "N/A"}</td>
+              <td>${item.guacp || "N/A"}</td>
+              <td>${item.pkg_manual || "N/A"}</td>
+              <td>${item.pkg_auto || "N/A"}</td>
+              <td>${item.pallet_auto || "N/A"}</td>
+              <td>${item.numero_da_ea || "N/A"}</td>
+              <td>${item.pesadoras_mes || "N/A"}</td>
+              <td>${item.guacp_mes || "N/A"}</td>
+              <td>${item.estatus_revisado || "N/A"}</td>
+              <td>${item.asteriscos || "N/A"}</td>
+            </tr>
+          `;
+        });
+        
+        html += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('layOutDetalle').innerHTML = `
+        <div class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle me-2"></i> Error al obtener datos. Detalles: ${error.message}
+        </div>
+      `;
+    });
+}
+
+// Filtrar KPIs por mes y año
+document.getElementById('filterKpiBtn').addEventListener('click', function() {
+  const bu = document.getElementById('kpiBU').value;
+  const month = document.getElementById('kpiMonth').value;
+  const year = document.getElementById('kpiYear').value;
+
+
+
+  // Redirigir a la misma página con los parámetros de filtro
+  let url = "{{ url_for('admin') }}?month=" + month + "&year=" + year;
+  
+  // Agregar el parámetro BU solo si no es "TODOS"
+  if (bu !== "TODOS") {
+    url += "&bu=" + bu;
+  }
+  
+  window.location.href = url;
+});
+
+
+
+// Al cargar la página, activar la pestaña correcta según la URL
+document.addEventListener('DOMContentLoaded', function() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.has('month') || urlParams.has('year')) {
+    // Si hay filtros de mes/año, mostramos la pestaña de KPIs
+    document.getElementById('kpis-tab').click();
+  }
+});
+
+// Funciones para manejar comentarios
+function showComments(userId, month, year, plant, bu, kpiId) {
+  // Mostrar planta en el título del modal
+  document.getElementById('commentModalPlant').textContent = `${plant} (${bu}) - ${month}/${year}`;
+
+  // Guardar datos en campos ocultos
+  document.getElementById('comment_kpi_id').value = kpiId;
+  document.getElementById('comment_user_id').value = userId;
+  document.getElementById('comment_month').value = month;
+  document.getElementById('comment_year').value = year;
+
+  // Mostrar indicador de carga
+  document.getElementById('packing_efficiency_comment').value = 'Cargando...';
+  document.getElementById('material_waste_comment').value = 'Cargando...';
+  document.getElementById('giveaway_comment').value = 'Cargando...';
+
+  // Mostrar modal
+  const commentsModal = new bootstrap.Modal(document.getElementById('commentsModal'));
+  commentsModal.show();
+
+  // Cargar comentarios existentes si hay ID de KPI
+  if (kpiId > 0) {
+    fetch(`/get_kpi_comments/${kpiId}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById('packing_efficiency_comment').value = data.comments.packing_efficiency || '';
+          document.getElementById('material_waste_comment').value = data.comments.material_waste || '';
+          document.getElementById('giveaway_comment').value = data.comments.giveaway || '';
+          
+          // Mostrar mensaje si se cargaron comentarios
+          if (data.comments.packing_efficiency || data.comments.material_waste || data.comments.giveaway) {
+            showCommentStatus('Comentarios cargados correctamente');
+          }
+        } else {
+          // Limpiar si hay error
+          document.getElementById('packing_efficiency_comment').value = '';
+          document.getElementById('material_waste_comment').value = '';
+          document.getElementById('giveaway_comment').value = '';
+          showCommentStatus('No se encontraron comentarios previos', false);
+        }
+      })
+      .catch(error => {
+        console.error('Error cargando comentarios:', error);
+        // Limpiar si hay error
+        document.getElementById('packing_efficiency_comment').value = '';
+        document.getElementById('material_waste_comment').value = '';
+        document.getElementById('giveaway_comment').value = '';
+        showCommentStatus('Error al cargar comentarios', false);
+      });
+  } else {
+    // Si no hay KPI, limpiar los campos
+    document.getElementById('packing_efficiency_comment').value = '';
+    document.getElementById('material_waste_comment').value = '';
+    document.getElementById('giveaway_comment').value = '';
+  }
+}
+
+function saveComments() {
+  const kpiId = document.getElementById('comment_kpi_id').value;
+  const userId = document.getElementById('comment_user_id').value;
+  const month = document.getElementById('comment_month').value;
+  const year = document.getElementById('comment_year').value;
+
+  // Obtener los valores de los comentarios
+  const packingEfficiency = document.getElementById('packing_efficiency_comment').value.trim();
+  const materialWaste = document.getElementById('material_waste_comment').value.trim();
+  const giveaway = document.getElementById('giveaway_comment').value.trim();
+
+  // Verificar si al menos uno de los comentarios tiene contenido
+  const hasComments = packingEfficiency !== '' || materialWaste !== '' || giveaway !== '';
+
+  const data = {
+    kpi_id: kpiId,
+    user_id: userId,
+    month: month,
+    year: year,
+    packing_efficiency: packingEfficiency,
+    material_waste: materialWaste,
+    giveaway: giveaway
+  };
+
+  // Mostrar indicador de guardado
+  const saveBtn = document.querySelector('.modal-footer .btn-primary');
+  const originalBtnText = saveBtn.innerHTML;
+  saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Guardando...';
+  saveBtn.disabled = true;
+
+  // Guardar comentarios
+  fetch('/save_kpi_comments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  .then(response => response.json())
+  .then(result => {
+    if (result.success) {
+      // Mostrar mensaje de éxito en el modal
+      showCommentStatus('Comentarios guardados correctamente');
+
+      // Si se creó un nuevo KPI, actualizar el ID en la interfaz
+      if (result.kpi_id && kpiId === '0') {
+        document.getElementById('comment_kpi_id').value = result.kpi_id;
+      }
+
+      // Actualizar el botón de comentarios en la tabla
+      try {
+        // Encontrar el botón de comentarios para este KPI
+        const buttons = document.querySelectorAll('button[onclick*="showComments"]');
+        for (let btn of buttons) {
+          if (btn.getAttribute('onclick').includes(`'${userId}'`) && 
+              btn.getAttribute('onclick').includes(`'${month}'`) && 
+              btn.getAttribute('onclick').includes(`'${year}'`)) {
+            
+            // Actualizar el aspecto del botón según si tiene comentarios o no
+            if (hasComments) {
+              btn.classList.remove('btn-outline-info');
+              btn.classList.add('btn-info', 'text-white');
+              btn.querySelector('i').classList.remove('fa-comment');
+              btn.querySelector('i').classList.add('fa-comment-dots');
+            } else {
+              btn.classList.remove('btn-info', 'text-white');
+              btn.classList.add('btn-outline-info');
+              btn.querySelector('i').classList.remove('fa-comment-dots');
+              btn.querySelector('i').classList.add('fa-comment');
+            }
+            
+            break;
+          }
+        }
+        
+        // También actualizar el badge si existe
+        const rows = document.querySelectorAll('tr');
+        for (let row of rows) {
+          const cells = row.querySelectorAll('td');
+          if (cells.length > 0) {
+            const commentBtn = row.querySelector('button[onclick*="showComments"]');
+            if (commentBtn && commentBtn.getAttribute('onclick').includes(`'${userId}'`) && 
+                commentBtn.getAttribute('onclick').includes(`'${month}'`) && 
+                commentBtn.getAttribute('onclick').includes(`'${year}'`)) {
+              
+              // Encuentra la celda de la planta (primera celda)
+              const plantCell = cells[0];
+              
+              // Actualizar o añadir badge
+              let badge = plantCell.querySelector('.badge.bg-info');
+              if (hasComments) {
+                if (!badge) {
+                  // Añadir badge si no existe
+                  const span = document.createElement('span');
+                  span.className = 'badge bg-info ms-2';
+                  span.title = 'Tiene comentarios';
+                  span.innerHTML = '<i class="fas fa-comment-dots"></i>';
+                  plantCell.querySelector('.d-flex').appendChild(span);
+                }
+              } else {
+                // Quitar badge si ya no hay comentarios
+                if (badge) {
+                  badge.remove();
+                }
+              }
+              
+              break;
+            }
+          }
+        }
+      } catch (e) {
+        console.error('Error actualizando UI:', e);
+      }
+    } else {
+      showCommentStatus('Error al guardar comentarios: ' + (result.error || 'Error desconocido'), false);
+    }
+
+    // Restaurar botón de guardar
+    saveBtn.innerHTML = originalBtnText;
+    saveBtn.disabled = false;
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    showCommentStatus('Error en la comunicación con el servidor', false);
+
+    // Restaurar botón de guardar
+    saveBtn.innerHTML = originalBtnText;
+    saveBtn.disabled = false;
+  });
+}
+
+// NUEVAS FUNCIONES PARA MOSTRAR LÍNEAS DE PLANTA
+
+// Función para mostrar las líneas de una planta
+// Función para mostrar las líneas de una planta
+function mostrarLineasPlanta(planta, bu, mes, anio) {
+  // Actualizar el título del modal
+  document.getElementById('modalPlantaName').textContent = `${planta} (${bu}) - ${mes}/${anio}`;
+  
+  // Mostrar el indicador de carga
+  document.getElementById('loadingLineas').style.display = 'block';
+  document.getElementById('lineasList').style.display = 'none';
+  document.getElementById('lineaDetails').style.display = 'none';
+  
+  // Mostrar el modal
+  const lineasModal = new bootstrap.Modal(document.getElementById('lineasPlantaModal'));
+  lineasModal.show();
+  
+  // Obtener las líneas de la planta
+  fetch(`/get_plant_lines?plant=${encodeURIComponent(planta)}&bu=${encodeURIComponent(bu)}&month=${mes}&year=${anio}`)
+    .then(response => response.json())
+    .then(data => {
+      // Ocultar indicador de carga
+      document.getElementById('loadingLineas').style.display = 'none';
+      document.getElementById('lineasList').style.display = 'flex';
+      
+      const lineasContainer = document.getElementById('lineasList');
+      lineasContainer.innerHTML = '';
+      
+      if (data.length === 0) {
+        lineasContainer.innerHTML = `
+          <div class="col-12">
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i> No se encontraron líneas configuradas para esta planta.
+            </div>
+          </div>
+        `;
+        return;
+      }
+      
+      // MODIFICACIÓN: Ya no agrupar por categoría, mostrar todas las líneas juntas
+      // en una única cuadrícula
+      
+      // Ordenar líneas alfabéticamente
+      data.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      
+      // Crear tarjetas para cada línea
+      data.forEach(linea => {
+        const statusClass = linea.has_data ? 'success' : 'danger';
+        const statusText = linea.has_data ? 'Datos cargados' : 'Pendiente';
+        const statusIcon = linea.has_data ? 'fa-check-circle' : 'fa-exclamation-circle';
+        
+        const lineaCard = document.createElement('div');
+        lineaCard.className = 'col-md-4 col-lg-3 mb-3';
+        
+        lineaCard.innerHTML = `
+          <div class="card h-100 ${linea.has_data ? 'border-success' : 'border-danger'}">
+            <div class="card-body">
+              <h6 class="card-title d-flex justify-content-between align-items-center">
+                <span>${linea.nombre}</span>
+                <span class="badge bg-${statusClass}">
+                  <i class="fas ${statusIcon}"></i>
+                </span>
+              </h6>
+              <p class="card-text text-${statusClass} small mb-0">
+                ${statusText}
+              </p>
+            </div>
+            <div class="card-footer bg-transparent p-2 text-center">
+              <button class="btn btn-sm btn-${linea.has_data ? 'success' : 'secondary'}" 
+                      ${!linea.has_data ? 'disabled' : ''} 
+                      onclick="mostrarDetallesLinea('${linea.nombre}', ${linea.kpi_id}, ${mes}, ${anio})">
+                <i class="fas ${linea.has_data ? 'fa-chart-bar' : 'fa-ban'} me-1"></i>
+                ${linea.has_data ? 'Ver detalles' : 'Sin datos'}
+              </button>
+            </div>
+          </div>
+        `;
+        
+        lineasContainer.appendChild(lineaCard);
+      });
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('loadingLineas').style.display = 'none';
+      document.getElementById('lineasList').innerHTML = `
+        <div class="col-12">
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle me-2"></i> Error al cargar las líneas: ${error.message}
+          </div>
+        </div>
+      `;
+      document.getElementById('lineasList').style.display = 'block';
+    });
+}
+
+// Función para mostrar detalles de una línea
+function mostrarDetallesLinea(nombreLinea, kpiId, mes, anio) {
+  // Ocultar lista de líneas y mostrar detalles
+  document.getElementById('lineasList').style.display = 'none';
+  document.getElementById('lineaDetails').style.display = 'block';
+  
+  // Actualizar el nombre de la línea
+  document.getElementById('lineaDetailsName').textContent = nombreLinea;
+  
+  // Mostrar indicador de carga en la tabla
+  document.getElementById('lineaDetailsTable').innerHTML = `
+    <tr>
+      <td colspan="2" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-2">Cargando detalles de KPI...</p>
+      </td>
+    </tr>
+  `;
+  
+  // Obtener detalles del KPI
+  fetch(`/get_kpi_details/${kpiId}`)
+    .then(response => response.json())
+    .then(data => {
+      if (!data.success) {
+        document.getElementById('lineaDetailsTable').innerHTML = `
+          <tr>
+            <td colspan="2" class="text-center">
+              <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i> ${data.error || 'No se pudo cargar la información'}
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      
+      const kpi = data.kpi;
+      let statusColors = {
+        high: 'success',
+        medium: 'warning',
+        low: 'danger'
+      };
+      
+      // Determinar color de eficiencia para cada valor
+      function getEfficiencyClass(value) {
+        if (value >= 85) return statusColors.high;
+        if (value >= 70) return statusColors.medium;
+        return statusColors.low;
+      }
+      
+      // Construir tabla de detalles
+      let html = `
+        <tr>
+          <th class="bg-light" style="width: 40%">Indicador</th>
+          <th class="bg-light" style="width: 60%">Valor</th>
+        </tr>
+        <tr>
+          <th>Eficiencia Pesadora</th>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                <div class="progress-bar bg-${getEfficiencyClass(kpi.eficiencia_pesadora)}" 
+                     role="progressbar" style="width: ${kpi.eficiencia_pesadora}%" 
+                     aria-valuenow="${kpi.eficiencia_pesadora}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="badge bg-${getEfficiencyClass(kpi.eficiencia_pesadora)}">${kpi.eficiencia_pesadora.toFixed(2)}%</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>Eficiencia Empaque</th>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                <div class="progress-bar bg-${getEfficiencyClass(kpi.eficiencia_empaque)}" 
+                     role="progressbar" style="width: ${kpi.eficiencia_empaque}%" 
+                     aria-valuenow="${kpi.eficiencia_empaque}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="badge bg-${getEfficiencyClass(kpi.eficiencia_empaque)}">${kpi.eficiencia_empaque.toFixed(2)}%</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>Eficiencia DME</th>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                <div class="progress-bar bg-${getEfficiencyClass(kpi.eficiencia_dme)}" 
+                     role="progressbar" style="width: ${kpi.eficiencia_dme}%" 
+                     aria-valuenow="${kpi.eficiencia_dme}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="badge bg-${getEfficiencyClass(kpi.eficiencia_dme)}">${kpi.eficiencia_dme.toFixed(2)}%</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>Sobre Grameaje</th>
+          <td>${kpi.sobre_gramaje.toFixed(2)}%</td>
+        </tr>
+        <tr>
+          <th>Eficiencia GUACP</th>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                <div class="progress-bar bg-${getEfficiencyClass(kpi.eficiencia_guacp)}" 
+                     role="progressbar" style="width: ${kpi.eficiencia_guacp}%" 
+                     aria-valuenow="${kpi.eficiencia_guacp}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="badge bg-${getEfficiencyClass(kpi.eficiencia_guacp)}">${kpi.eficiencia_guacp.toFixed(2)}%</span>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>MTBF</th>
+          <td>${kpi.mtbf.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <th>MTTR</th>
+          <td>${kpi.mttr.toFixed(2)}</td>
+        </tr>
+        <tr>
+          <th>Eficiencia en Espera</th>
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                <div class="progress-bar bg-${getEfficiencyClass(kpi.eficiencia_espera_producto)}" 
+                     role="progressbar" style="width: ${kpi.eficiencia_espera_producto}%" 
+                     aria-valuenow="${kpi.eficiencia_espera_producto}" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="badge bg-${getEfficiencyClass(kpi.eficiencia_espera_producto)}">${kpi.eficiencia_espera_producto.toFixed(2)}%</span>
+            </div>
+          </td>
+        </tr>
+      `;
+      
+      document.getElementById('lineaDetailsTable').innerHTML = html;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      document.getElementById('lineaDetailsTable').innerHTML = `
+        <tr>
+          <td colspan="2" class="text-center">
+            <div class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i> Error al cargar los detalles: ${error.message}
+            </div>
+          </td>
+        </tr>
+      `;
+    });
+}
+
+// Función para volver a la lista de líneas
+function volverALineas() {
+  document.getElementById('lineasList').style.display = 'flex';
+  document.getElementById('lineaDetails').style.display = 'none';
+}
+
+// Funciones para configuración de fecha límite
+document.addEventListener('DOMContentLoaded', function() {
+  const limitDateForm = document.getElementById('limitDateForm');
+  if (limitDateForm) {
+    limitDateForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const limitDay = document.getElementById('limitDay').value;
+      if (limitDay < 1 || limitDay > 31) {
+        showDateConfigResult('error', 'El día debe estar entre 1 y 31');
+        return;
+      }
+      
+      // Guardar configuración
+      fetch('/save_deadline_config', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          deadline_day: limitDay
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          showDateConfigResult('success', 'Configuración guardada correctamente');
+          
+          // Actualizar información en la interfaz
+          document.getElementById('currentDeadline').textContent = data.deadline_formatted;
+          
+          const statusBadge = document.getElementById('deadlineStatus');
+          statusBadge.className = `badge ${data.deadline_passed ? 'bg-danger' : 'bg-success'}`;
+          statusBadge.textContent = data.deadline_passed ? 'Fecha límite superada' : 'Dentro del plazo';
+        } else {
+          showDateConfigResult('error', data.error || 'Error al guardar la configuración');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showDateConfigResult('error', 'Error en la comunicación con el servidor');
+      });
+    });
+  }
+});
+
+function showDateConfigResult(type, message) {
+  const resultContainer = document.getElementById('dateConfigResult');
+  resultContainer.innerHTML = `
+    <div class="alert alert-${type === 'success' ? 'success' : 'danger'} alert-dismissible fade show">
+      <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'} me-2"></i> 
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  `;
+}
+
+
+// Agregar al final del script en admin_panel.html
+// Botón de descarga de KPIs
+document.getElementById('downloadKpiBtn').addEventListener('click', function() {
+  // Mostrar el modal de descarga
+  const downloadModal = new bootstrap.Modal(document.getElementById('downloadModal'));
+  downloadModal.show();
+});
+
+// Validar y ejecutar la descarga
+document.getElementById('confirmDownloadBtn').addEventListener('click', function() {
+  // Obtener los filtros seleccionados
+  const bu = document.getElementById('downloadBU').value;
+  const year = document.getElementById('downloadYear').value;
+  
+  // Obtener los meses seleccionados
+  const monthCheckboxes = document.querySelectorAll('.download-month:checked');
+  if (monthCheckboxes.length === 0) {
+    showDownloadAlert('Debe seleccionar al menos un mes');
+    return;
+  }
+  
+  const months = Array.from(monthCheckboxes).map(cb => cb.value);
+  
+  // Crear el objeto de datos para la solicitud
+  const data = {
+    bu: bu,
+    year: year,
+    months: months
+  };
+  
+  // Iniciar la descarga mediante un formulario oculto
+  // (esto permite la descarga directa del archivo)
+  executeDownload(data);
+});
+
+function showDownloadAlert(message) {
+  const alertEl = document.getElementById('downloadAlert');
+  document.getElementById('downloadAlertMessage').textContent = message;
+  alertEl.style.display = 'block';
+  
+  // Ocultar después de 3 segundos
+  setTimeout(() => {
+    alertEl.style.display = 'none';
+  }, 3000);
+}
+
+function executeDownload(data) {
+  // Crear un formulario temporal para la descarga
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = "{{ url_for('download_kpi_report') }}";
+  form.style.display = 'none';
+  
+  // Crear campo oculto para los datos JSON
+  const input = document.createElement('input');
+  input.type = 'hidden';
+  input.name = 'data';
+  input.value = JSON.stringify(data);
+  form.appendChild(input);
+  
+  // Agregar formulario al documento y enviarlo
+  document.body.appendChild(form);
+  
+  // Mostrar indicador de progreso
+  const downloadBtn = document.getElementById('confirmDownloadBtn');
+  const originalBtnText = downloadBtn.innerHTML;
+  downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Preparando...';
+  downloadBtn.disabled = true;
+  
+  // Función para restaurar el botón después de un tiempo
+  setTimeout(() => {
+    downloadBtn.innerHTML = originalBtnText;
+    downloadBtn.disabled = false;
+    
+    // Cerrar el modal
+    const modal = bootstrap.Modal.getInstance(document.getElementById('downloadModal'));
+    modal.hide();
+  }, 1500);
+  
+  // Enviar formulario para descargar
+  form.submit();
+  
+  // Eliminar formulario después de usarlo
+  setTimeout(() => {
+    document.body.removeChild(form);
+  }, 2000);
+}
+
+// Función para seleccionar/deseleccionar todos los meses
+document.getElementById('downloadForm').insertAdjacentHTML('beforeend', `
+  <div class="mb-3">
+    <button type="button" class="btn btn-sm btn-outline-secondary" id="selectAllMonths">
+      Seleccionar todos
+    </button>
+    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" id="deselectAllMonths">
+      Deseleccionar todos
+    </button>
+  </div>
+`);
+
+document.getElementById('selectAllMonths').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.querySelectorAll('.download-month').forEach(cb => cb.checked = true);
+});
+
+document.getElementById('deselectAllMonths').addEventListener('click', function(e) {
+  e.preventDefault();
+  document.querySelectorAll('.download-month').forEach(cb => cb.checked = false);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuración - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS y Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+    }
+    
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header y Navegación */
+    .main-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white !important;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand .logo-circle {
+      background-color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand .logo-circle i {
+      color: var(--pepsico-blue);
+      font-size: 18px;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover,
+    .navbar-dark .navbar-nav .nav-link:focus {
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .navbar-dark .navbar-nav .nav-link.active {
+      color: white;
+      font-weight: 500;
+    }
+    
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 30px 0;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 10px;
+    }
+    
+    /* Tarjetas y contenedores */
+    .content-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+      overflow: hidden;
+      border: none;
+    }
+    
+    .card-header {
+      background-color: var(--pepsico-blue);
+      color: white;
+      padding: 15px 20px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    /* Tabs de navegación secundaria */
+    .config-tabs {
+      background-color: #f8f9fa;
+      border-radius: 8px 8px 0 0;
+      overflow: hidden;
+      border-bottom: 1px solid #dee2e6;
+    }
+    
+    .config-tabs .nav-link {
+      padding: 12px 20px;
+      color: var(--dark-gray);
+      font-weight: 500;
+      border: none;
+      border-radius: 0;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .config-tabs .nav-link:hover {
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+    
+    .config-tabs .nav-link.active {
+      color: var(--pepsico-blue);
+      background-color: white;
+      font-weight: 600;
+    }
+    
+    .config-tabs .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background-color: var(--pepsico-blue);
+    }
+    
+    .config-tabs .nav-link i {
+      margin-right: 8px;
+    }
+    
+    /* Tablas */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: var(--pepsico-blue);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px 15px;
+      white-space: nowrap;
+    }
+    
+    .table tbody tr:nth-of-type(odd) {
+      background-color: rgba(3, 87, 160, 0.03);
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(3, 87, 160, 0.06);
+    }
+    
+    .table td {
+      padding: 10px 15px;
+      vertical-align: middle;
+    }
+    
+    /* Botones */
+    .btn-primary {
+      background-color: var(--pepsico-blue);
+      border-color: var(--pepsico-blue);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--pepsico-dark-blue);
+      border-color: var(--pepsico-dark-blue);
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover, .btn-secondary:focus {
+      background-color: #5a6268;
+      border-color: #5a6268;
+      transform: translateY(-2px);
+    }
+    
+    /* Iconos y acciones en tablas */
+    .action-btn {
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 6px;
+      font-size: 1rem;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 2px;
+      transition: all 0.2s ease;
+    }
+    
+    .action-btn.green {
+      color: white;
+      background-color: #28a745;
+    }
+    
+    .action-btn.red {
+      color: white;
+      background-color: var(--pepsico-red);
+    }
+    
+    .action-btn.edit {
+      color: white;
+      background-color: var(--pepsico-light-blue);
+    }
+    
+    .action-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    /* Footer */
+    .main-footer {
+      background-color: var(--dark-gray);
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    /* Modales */
+    .modal-header {
+      background-color: var(--pepsico-blue);
+      color: white;
+    }
+    
+    .modal-content {
+      border-radius: 8px;
+      overflow: hidden;
+      border: none;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    /* Forma para equipo */
+    .equipo-form {
+      border: 1px solid #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      margin-bottom: 15px;
+    }
+    
+    /* Path de navegación */
+    .breadcrumb-container {
+      margin-bottom: 20px;
+    }
+    
+    .breadcrumb {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 10px 15px;
+    }
+    
+    .breadcrumb-item a {
+      color: var(--pepsico-blue);
+      text-decoration: none;
+    }
+    
+    .breadcrumb-item.active {
+      color: var(--dark-gray);
+      font-weight: 500;
+    }
+    
+    /* Tarjeta de información para línea */
+    .line-info-card {
+      border-left: 4px solid var(--pepsico-blue);
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .line-info-card h4 {
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--dark-gray);
+    }
+    
+    .empty-state i {
+      font-size: 3rem;
+      color: #dee2e6;
+      margin-bottom: 15px;
+    }
+    
+    .empty-state p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Alerta */
+    .alert {
+      border-radius: 8px;
+      animation: fadeInUp 0.5s;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="main-header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+          <div class="logo-circle">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          PepsiCo KPI System
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('carga_kpis') }}">
+                <i class="fas fa-chart-line me-1"></i> KPI's
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('lay_out_planta') }}">
+                <i class="fas fa-industry me-1"></i> Lay Out
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('configuracion') }}">
+                <i class="fas fa-cog me-1"></i> Configuración
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <div class="container">
+      <!-- Encabezado de página -->
+      <div class="page-header">
+        <h1 class="page-title">Configuración del Sistema</h1>
+        <p class="text-muted">Administra las líneas de equipos y configuraciones del sistema</p>
+      </div>
+      
+      <!-- Bloque de mensajes flash -->
+      <div id="alertContainer">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <i class="fas fa-info-circle me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+      
+      <!-- Tarjeta principal de configuración -->
+      <div class="content-card">
+        <!-- Tabs de navegación -->
+        <ul class="nav nav-tabs config-tabs" id="configTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="lineas-tab" data-bs-toggle="tab" data-bs-target="#lineas-content" type="button" role="tab">
+              <i class="fas fa-sitemap"></i> Líneas de Equipos
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="equipos-tab" data-bs-toggle="tab" data-bs-target="#equipos-content" type="button" role="tab">
+              <i class="fas fa-tools"></i> Equipos
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="general-tab" data-bs-toggle="tab" data-bs-target="#general-content" type="button" role="tab">
+              <i class="fas fa-sliders-h"></i> General
+            </button>
+          </li>
+        </ul>
+        
+        <!-- Contenido de los tabs -->
+        <div class="tab-content p-3" id="configTabsContent">
+          <!-- 1. Líneas de Equipos -->
+          <div class="tab-pane fade show active" id="lineas-content" role="tabpanel">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="m-0">Gestión de Líneas</h4>
+              <button id="addLineaBtn" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Agregar Línea
+              </button>
+            </div>
+            
+            <div class="table-container">
+              <table class="table table-hover" id="lineaTable">
+                <thead>
+                  <tr>
+                    <th style="width: 70px">ID</th>
+                    <th>Nombre de Línea</th>
+                    <th style="width: 180px">Acciones</th>
+                    <th style="width: 150px">Equipos</th>
+                  </tr>
+                </thead>
+                <tbody id="lineaTableBody">
+                  {% for linea in lineas %}
+                  <tr data-id="{{ linea.id }}">
+                    <td>{{ linea.id }}</td>
+                    <td><input type="text" class="form-control" name="nombre" value="{{ linea.nombre }}" disabled></td>
+                    <td>
+                      <button class="action-btn green" onclick="saveLinea(this)" title="Guardar">
+                        <i class="fas fa-check"></i>
+                      </button>
+                      <button class="action-btn red" onclick="deleteLinea(this)" title="Borrar">
+                        <i class="fas fa-times"></i>
+                      </button>
+                      <button class="action-btn edit" onclick="editLinea(this)" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                      </button>
+                    </td>
+                    <td>
+                      <button class="btn btn-outline-primary btn-sm equipos-btn" data-linea-id="{{ linea.id }}" data-linea-nombre="{{ linea.nombre }}">
+                        <i class="fas fa-tools me-1"></i> Ver Equipos
+                      </button>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Estado vacío para cuando no hay líneas -->
+            <div id="emptyLineState" class="empty-state" style="display: none;">
+              <i class="fas fa-sitemap"></i>
+              <p>No hay líneas configuradas</p>
+              <button id="addEmptyLineaBtn" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Agregar Línea
+              </button>
+            </div>
+          </div>
+          
+          <!-- 2. Equipos -->
+          <div class="tab-pane fade" id="equipos-content" role="tabpanel">
+            <!-- Breadcrumb para navegación -->
+            <div class="breadcrumb-container">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item"><a href="#" id="volverLineas">Líneas</a></li>
+                  <li class="breadcrumb-item active" id="lineaActual">Seleccione una línea</li>
+                </ol>
+              </nav>
+            </div>
+            
+            <!-- Tarjeta de información de línea seleccionada -->
+            <div class="line-info-card" id="lineaInfoCard" style="display: none;">
+              <div class="d-flex justify-content-between align-items-center">
+                <h4 id="lineaTitulo">Equipos de la Línea</h4>
+                <button id="addEquipoBtn" class="btn btn-primary btn-sm">
+                  <i class="fas fa-plus me-1"></i> Agregar Equipo
+                </button>
+              </div>
+            </div>
+            
+            <!-- Tabla de equipos -->
+            <div class="table-container" id="equiposTableContainer" style="display: none;">
+              <table class="table table-hover" id="equipoTable">
+                <thead>
+                  <tr>
+                    <th style="width: 70px">ID</th>
+                    <th>Nombre de Equipo</th>
+                    <th>Descripción</th>
+                    <th style="width: 150px">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="equipoTableBody">
+                  <!-- Los equipos se cargarán dinámicamente -->
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Estado inicial o vacío -->
+            <div id="selectLineState" class="empty-state">
+              <i class="fas fa-tools"></i>
+              <p>Seleccione una línea para ver sus equipos</p>
+              <button class="btn btn-outline-primary" id="irALineas">
+                <i class="fas fa-arrow-left me-2"></i> Ir a líneas
+              </button>
+            </div>
+            
+            <div id="emptyEquipoState" class="empty-state" style="display: none;">
+              <i class="fas fa-wrench"></i>
+              <p>No hay equipos configurados para esta línea</p>
+              <button id="addEmptyEquipoBtn" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Agregar Equipo
+              </button>
+            </div>
+          </div>
+          
+          <!-- 3. Configuración General -->
+          <div class="tab-pane fade" id="general-content" role="tabpanel">
+            <h4 class="mb-3">Configuración General</h4>
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i> Próximamente: Configuraciones adicionales del sistema.
+            </div>
+            
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title"><i class="fas fa-user me-2"></i>Información de Usuario</h5>
+                <p class="card-text">El usuario actual tiene acceso a la configuración del sistema.</p>
+                <p class="card-text">Desde aquí puede administrar las líneas y equipos asociados a su planta.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <p class="mb-0">&copy; 2025 PepsiCo, Inc. Sistema de Gestión de KPI para Plantas</p>
+    </div>
+  </footer>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Variables globales
+    let currentLineaId = null;
+    let currentLineaNombre = "";
+    
+    // Funciones para la gestión de líneas
+    document.getElementById('addLineaBtn').addEventListener('click', function() {
+      agregarNuevaLinea();
+    });
+    
+    document.getElementById('addEmptyLineaBtn').addEventListener('click', function() {
+      agregarNuevaLinea();
+    });
+    
+    // Al cargar la página, verificar si hay líneas
+    document.addEventListener('DOMContentLoaded', function() {
+      checkLineaEmpty();
+      
+      // Configurar los botones de equipos existentes
+      document.querySelectorAll('.equipos-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          mostrarEquipos(this.getAttribute('data-linea-id'), this.getAttribute('data-linea-nombre'));
+        });
+      });
+      
+      // Configurar los botones de navegación de equipos
+      document.getElementById('volverLineas').addEventListener('click', function(e) {
+        e.preventDefault();
+        volverALineas();
+      });
+      
+      document.getElementById('irALineas').addEventListener('click', function() {
+        document.getElementById('lineas-tab').click();
+      });
+      
+      // Configurar los botones de agregar equipo
+      document.getElementById('addEquipoBtn').addEventListener('click', function() {
+        agregarNuevoEquipo();
+      });
+      
+      document.getElementById('addEmptyEquipoBtn').addEventListener('click', function() {
+        agregarNuevoEquipo();
+      });
+    });
+    
+    function agregarNuevaLinea() {
+      var tbody = document.getElementById('lineaTableBody');
+      var newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>Nueva</td>
+        <td><input type="text" class="form-control" name="nombre" value="" placeholder="Nombre de la línea"></td>
+        <td>
+          <button class="action-btn green" onclick="saveLinea(this)" title="Guardar">
+            <i class="fas fa-check"></i>
+          </button>
+          <button class="action-btn red" onclick="deleteLinea(this)" title="Borrar">
+            <i class="fas fa-times"></i>
+          </button>
+          <button class="action-btn edit" onclick="editLinea(this)" title="Editar">
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+        </td>
+        <td></td>
+      `;
+      tbody.appendChild(newRow);
+      
+      // Verificar si hay que ocultar el estado vacío
+      checkLineaEmpty();
+      
+      // Enfocar el nuevo campo
+      newRow.querySelector('input[name="nombre"]').focus();
+    }
+    
+    function saveLinea(btn) {
+      var row = btn.parentNode.parentNode;
+      var nombreInput = row.querySelector('input[name="nombre"]');
+      var nombre = nombreInput.value.trim();
+      
+      if (!nombre) {
+        showAlert("danger", "El nombre de la línea no puede estar vacío");
+        nombreInput.focus();
+        return;
+      }
+      
+      var id = row.getAttribute('data-id');
+      
+      if (id && id !== "Nueva") {
+        // Actualizar línea existente
+        var urlTemplate = "{{ url_for('actualizar_linea_config', linea_id=0) }}";
+        var updateUrl = urlTemplate.replace('/0', '/' + id);
+        
+        fetch(updateUrl, {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({nombre: nombre})
+        })
+        .then(response => response.json())
+        .then(result => {
+          if(result.success) {
+            showAlert("success", "Línea actualizada correctamente");
+            nombreInput.disabled = true;
+            
+            // Actualizar botón de equipos si existe
+            const equiposBtn = row.querySelector('.equipos-btn');
+            if (equiposBtn) {
+              equiposBtn.setAttribute('data-linea-nombre', nombre);
+            }
+          } else {
+            showAlert("danger", "Error al actualizar la línea");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showAlert("danger", "Error en la solicitud");
+        });
+      } else {
+        // Crear nueva línea
+        fetch("{{ url_for('guardar_linea_config') }}", {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({nombre: nombre})
+        })
+        .then(response => response.json())
+        .then(result => {
+          if(result.success) {
+            showAlert("success", "Línea guardada correctamente");
+            row.setAttribute('data-id', result.id);
+            row.querySelector('td').innerText = result.id;
+            nombreInput.disabled = true;
+            
+            // Agregar botón de equipos
+            const tdEquipos = row.querySelector('td:last-child');
+            tdEquipos.innerHTML = `
+              <button class="btn btn-outline-primary btn-sm equipos-btn" data-linea-id="${result.id}" data-linea-nombre="${nombre}">
+                <i class="fas fa-tools me-1"></i> Ver Equipos
+              </button>
+            `;
+            
+            // Configurar el nuevo botón
+            tdEquipos.querySelector('.equipos-btn').addEventListener('click', function() {
+              mostrarEquipos(this.getAttribute('data-linea-id'), this.getAttribute('data-linea-nombre'));
+            });
+          } else {
+            showAlert("danger", "Error al guardar la línea");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showAlert("danger", "Error en la solicitud");
+        });
+      }
+    }
+    
+    function deleteLinea(btn) {
+      if(confirm("⚠️ ¿Estás seguro de eliminar esta línea? Se eliminarán también todos los equipos asociados.")) {
+        var row = btn.parentNode.parentNode;
+        var id = row.getAttribute('data-id');
+        
+        if(id && id !== "Nueva") {
+          var urlTemplate = "{{ url_for('borrar_linea_config', linea_id=0) }}";
+          var deleteUrl = urlTemplate.replace('/0', '/' + id);
+          
+          fetch(deleteUrl, { method: 'DELETE' })
+          .then(response => response.json())
+          .then(result => {
+            if(result.success) {
+              row.remove();
+              showAlert("success", "Línea eliminada correctamente");
+              
+              // Si eliminamos la línea que estamos viendo, volver a la lista
+              if (currentLineaId === id) {
+                volverALineas();
+              }
+              
+              checkLineaEmpty();
+            } else {
+              showAlert("danger", "Error al eliminar la línea");
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showAlert("danger", "Error en la solicitud");
+          });
+        } else {
+          row.remove();
+          checkLineaEmpty();
+        }
+      }
+    }
+    
+    function editLinea(btn) {
+      var row = btn.parentNode.parentNode;
+      var input = row.querySelector('input[name="nombre"]');
+      input.disabled = false;
+      input.focus();
+      input.setSelectionRange(0, input.value.length);
+    }
+    
+    // Verificar si hay líneas o mostrar estado vacío
+    // Verificar si hay líneas o mostrar estado vacío
+    function checkLineaEmpty() {
+      const tbody = document.getElementById('lineaTableBody');
+      const emptyState = document.getElementById('emptyLineState');
+      
+      if (tbody.children.length === 0) {
+        emptyState.style.display = 'block';
+      } else {
+        emptyState.style.display = 'none';
+      }
+    }
+    
+    // Mostrar mensaje de alerta
+    function showAlert(type, message) {
+      const alertContainer = document.getElementById('alertContainer');
+      const alertHtml = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+          <i class="fas fa-info-circle me-2"></i> ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `;
+      alertContainer.innerHTML = alertHtml + alertContainer.innerHTML;
+      
+      // Auto-cerrar después de 5 segundos
+      setTimeout(() => {
+        const alerts = alertContainer.querySelectorAll('.alert');
+        if (alerts.length > 0) {
+          const bootstrapAlert = bootstrap.Alert.getOrCreateInstance(alerts[0]);
+          bootstrapAlert.close();
+        }
+      }, 5000);
+    }
+    
+    // Funciones para la gestión de equipos
+    function mostrarEquipos(lineaId, lineaNombre) {
+      currentLineaId = lineaId;
+      currentLineaNombre = lineaNombre;
+      
+      // Actualizar UI
+      document.getElementById('equipos-tab').click();
+      document.getElementById('lineaActual').textContent = lineaNombre;
+      document.getElementById('lineaTitulo').textContent = `Equipos de la Línea: ${lineaNombre}`;
+      document.getElementById('selectLineState').style.display = 'none';
+      document.getElementById('lineaInfoCard').style.display = 'block';
+      document.getElementById('equiposTableContainer').style.display = 'block';
+      
+      // Cargar equipos de la línea
+      cargarEquipos(lineaId);
+    }
+    
+    function volverALineas() {
+      document.getElementById('lineas-tab').click();
+      currentLineaId = null;
+      currentLineaNombre = "";
+    }
+    
+    function cargarEquipos(lineaId) {
+      // Limpiar la tabla de equipos actual
+      const tbody = document.getElementById('equipoTableBody');
+      tbody.innerHTML = '';
+      
+      // Mostrar indicador de carga
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Cargando equipos...</span>
+            </div>
+            <p class="mt-2 mb-0">Cargando equipos...</p>
+          </td>
+        </tr>
+      `;
+      
+      // Cargar equipos desde el backend
+      fetch(`{{ url_for('config_equipos', linea_id=0) }}`.replace('/0', `/${lineaId}`), {
+        method: 'GET',
+        headers: {'Accept': 'application/json'}
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al cargar equipos');
+        }
+        
+        // Como estamos cargando la página, necesitamos extraer los datos de los equipos mediante DOM
+        return response.text();
+      })
+      .then(html => {
+        // Crear un DOM temporal para extraer los datos
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        const equiposRows = doc.querySelectorAll('#equipoTableBody tr');
+        
+        if (equiposRows.length === 0) {
+          // No hay equipos, mostrar estado vacío
+          document.getElementById('emptyEquipoState').style.display = 'block';
+          document.getElementById('equiposTableContainer').style.display = 'none';
+        } else {
+          // Hay equipos, actualizar la tabla
+          document.getElementById('emptyEquipoState').style.display = 'none';
+          document.getElementById('equiposTableContainer').style.display = 'block';
+          
+          // Limpiar la tabla y agregar los equipos
+          tbody.innerHTML = '';
+          equiposRows.forEach(row => {
+            tbody.appendChild(row.cloneNode(true));
+          });
+          
+          // Configurar eventos para los nuevos botones
+          tbody.querySelectorAll('.action-btn.green').forEach(btn => {
+            btn.onclick = function() { saveEquipo(this); };
+          });
+          
+          tbody.querySelectorAll('.action-btn.red').forEach(btn => {
+            btn.onclick = function() { deleteEquipo(this); };
+          });
+          
+          tbody.querySelectorAll('.action-btn.edit').forEach(btn => {
+            btn.onclick = function() { editEquipo(this); };
+          });
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showAlert('danger', 'Error al cargar los equipos');
+        
+        // Mostrar mensaje de error en la tabla
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="text-center py-4 text-danger">
+              <i class="fas fa-exclamation-triangle fs-4 mb-3"></i>
+              <p class="mb-0">Error al cargar los equipos. Intente nuevamente.</p>
+            </td>
+          </tr>
+        `;
+      });
+    }
+    
+    function agregarNuevoEquipo() {
+      if (!currentLineaId) {
+        showAlert('warning', 'Debe seleccionar una línea primero');
+        return;
+      }
+      
+      const tbody = document.getElementById('equipoTableBody');
+      
+      // Si hay un mensaje de "no hay equipos", quitarlo
+      if (document.getElementById('emptyEquipoState').style.display === 'block') {
+        document.getElementById('emptyEquipoState').style.display = 'none';
+        document.getElementById('equiposTableContainer').style.display = 'block';
+      }
+      
+      // Agregar nueva fila
+      const newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>Nuevo</td>
+        <td><input type="text" class="form-control" name="nombre" placeholder="Nombre del equipo"></td>
+        <td><input type="text" class="form-control" name="descripcion" placeholder="Descripción"></td>
+        <td>
+          <button class="action-btn green" onclick="saveEquipo(this)" title="Guardar">
+            <i class="fas fa-check"></i>
+          </button>
+          <button class="action-btn red" onclick="deleteEquipo(this)" title="Borrar">
+            <i class="fas fa-times"></i>
+          </button>
+          <button class="action-btn edit" onclick="editEquipo(this)" title="Editar">
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+        </td>
+      `;
+      tbody.appendChild(newRow);
+      
+      // Enfocar el campo de nombre
+      newRow.querySelector('input[name="nombre"]').focus();
+    }
+    
+    function saveEquipo(btn) {
+      var row = btn.parentNode.parentNode;
+      var nombreInput = row.querySelector('input[name="nombre"]');
+      var descripcionInput = row.querySelector('input[name="descripcion"]');
+      
+      var nombre = nombreInput.value.trim();
+      var descripcion = descripcionInput.value.trim();
+      
+      if (!nombre) {
+        showAlert("danger", "El nombre del equipo no puede estar vacío");
+        nombreInput.focus();
+        return;
+      }
+      
+      var id = row.getAttribute('data-id');
+      
+      var data = {
+        nombre: nombre,
+        descripcion: descripcion,
+        linea_id: currentLineaId
+      };
+      
+      if (id && id !== "Nuevo") {
+        // Actualizar equipo existente
+        var urlTemplate = "{{ url_for('actualizar_equipo', equipo_id=0) }}";
+        var updateUrl = urlTemplate.replace('/0', '/' + id);
+        
+        fetch(updateUrl, {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+          if(result.success) {
+            showAlert("success", "Equipo actualizado correctamente");
+            nombreInput.disabled = true;
+            descripcionInput.disabled = true;
+          } else {
+            showAlert("danger", "Error al actualizar el equipo");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showAlert("danger", "Error en la solicitud");
+        });
+      } else {
+        // Crear nuevo equipo
+        fetch("{{ url_for('guardar_equipo') }}", {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+          if(result.success) {
+            showAlert("success", "Equipo guardado correctamente");
+            row.setAttribute('data-id', result.id);
+            row.querySelector('td').innerText = result.id;
+            nombreInput.disabled = true;
+            descripcionInput.disabled = true;
+          } else {
+            showAlert("danger", "Error al guardar el equipo");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showAlert("danger", "Error en la solicitud");
+        });
+      }
+    }
+    
+    function deleteEquipo(btn) {
+      if(confirm("⚠️ ¿Estás seguro de eliminar este equipo?")) {
+        var row = btn.parentNode.parentNode;
+        var id = row.getAttribute('data-id');
+        
+        if(id && id !== "Nuevo") {
+          var urlTemplate = "{{ url_for('borrar_equipo', equipo_id=0) }}";
+          var deleteUrl = urlTemplate.replace('/0', '/' + id);
+          
+          fetch(deleteUrl, { method: 'DELETE' })
+          .then(response => response.json())
+          .then(result => {
+            if(result.success) {
+              row.remove();
+              showAlert("success", "Equipo eliminado correctamente");
+              
+              // Verificar si quedan equipos
+              const tbody = document.getElementById('equipoTableBody');
+              if (tbody.children.length === 0) {
+                document.getElementById('emptyEquipoState').style.display = 'block';
+                document.getElementById('equiposTableContainer').style.display = 'none';
+              }
+            } else {
+              showAlert("danger", "Error al eliminar el equipo");
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            showAlert("danger", "Error en la solicitud");
+          });
+        } else {
+          row.remove();
+          
+          // Verificar si quedan equipos
+          const tbody = document.getElementById('equipoTableBody');
+          if (tbody.children.length === 0) {
+            document.getElementById('emptyEquipoState').style.display = 'block';
+            document.getElementById('equiposTableContainer').style.display = 'none';
+          }
+        }
+      }
+    }
+    
+    function editEquipo(btn) {
+      var row = btn.parentNode.parentNode;
+      row.querySelectorAll('input').forEach(input => {
+        input.disabled = false;
+      });
+      row.querySelector('input[name="nombre"]').focus();
+    }
+  </script>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Lay Out de Planta - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS y Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+    }
+    
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header y Navegación */
+    .main-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white !important;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand .logo-circle {
+      background-color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand .logo-circle i {
+      color: var(--pepsico-blue);
+      font-size: 18px;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover,
+    .navbar-dark .navbar-nav .nav-link:focus {
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .navbar-dark .navbar-nav .nav-link.active {
+      color: white;
+      font-weight: 500;
+    }
+    
+    /* Contenido principal */
+    .main-content {
+      flex: 1;
+      padding: 30px 0;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 10px;
+    }
+    
+    /* Tarjetas y contenedores */
+    .content-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+      overflow: hidden;
+      border: none;
+    }
+    
+    .card-header {
+      background-color: var(--pepsico-blue);
+      color: white;
+      padding: 15px 20px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    /* Tabla de Layout */
+    .layout-table {
+      width: 100%;
+      margin-bottom: 0;
+    }
+    
+    .layout-table thead {
+      background-color: var(--pepsico-blue);
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    
+    .layout-table thead th {
+      font-weight: 600;
+      padding: 12px;
+      vertical-align: middle;
+      text-align: center;
+      font-size: 0.85rem;
+    }
+    
+    .layout-table tbody tr {
+      transition: background-color 0.2s ease;
+    }
+    
+    .layout-table tbody tr:hover {
+      background-color: rgba(3, 87, 160, 0.05);
+    }
+    
+    .layout-table td {
+      padding: 10px 5px;
+      vertical-align: middle;
+      text-align: center;
+    }
+    
+    /* Inputs en tabla */
+    .layout-table input, 
+    .layout-table select {
+      width: 100%;
+      min-width: 120px; /* Ancho mínimo para cada campo */
+      padding: 8px;
+      border: 1px solid #ced4da;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+     /* Especificar anchos para diferentes tipos de columnas */
+      .layout-table th.col-small {
+        min-width: 100px;
+      }
+
+      .layout-table th.col-medium {
+        min-width: 150px;
+      }
+
+      .layout-table th.col-large {
+        min-width: 200px;
+      }
+    
+    .layout-table input:disabled,
+    .layout-table select:disabled {
+      background-color: #e9ecef;
+      cursor: not-allowed;
+    }
+    
+    /* Botones de acción */
+    .action-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--pepsico-blue);
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      padding: 5px;
+      border-radius: 50%;
+    }
+    
+    .action-btn:hover {
+      color: var(--pepsico-dark-blue);
+      transform: scale(1.2);
+    }
+    
+    .action-btn.save { color: #28a745; }
+    .action-btn.delete { color: var(--pepsico-red); }
+    .action-btn.edit { color: var(--pepsico-light-blue); }
+    
+    /* Botón principal */
+    .btn-primary {
+      background-color: var(--pepsico-blue);
+      border-color: var(--pepsico-blue);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--pepsico-dark-blue);
+      border-color: var(--pepsico-dark-blue);
+      transform: translateY(-2px);
+    }
+    
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .layout-table {
+        font-size: 0.9rem;
+      }
+      
+      .layout-table input,
+      .layout-table select {
+        padding: 4px;
+      }
+    }
+
+    /* Estilos para alertas */
+    .alert-custom {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+      min-width: 250px;
+      animation: slideIn 0.5s;
+    }
+
+    @keyframes slideIn {
+      from { 
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to { 
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Scroll horizontal responsivo */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+    
+    /* Grupos de columnas */
+    .column-group {
+      background-color: rgba(3, 87, 160, 0.1);
+      border-right: 2px solid white;
+    }
+    
+    /* Fixed header para tabla con scroll */
+    .table-responsive {
+      overflow-x: auto;
+      position: relative;
+      width: 100%;
+      margin-bottom: 15px;
+      /* Altura máxima con desplazamiento vertical */
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
+    }
+
+    .table-responsive::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+    }
+
+    .table-responsive::-webkit-scrollbar-thumb {
+        background-color: var(--pepsico-blue);
+        border-radius: 6px;
+    }
+
+    .table-responsive::-webkit-scrollbar-track {
+       background-color: #f1f1f1;
+       border-radius: 6px;
+    }   
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="main-header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+          <div class="logo-circle">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          PepsiCo KPI System
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('lay_out_planta') }}">
+                <i class="fas fa-industry me-1"></i> LayOut de Planta
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Contenido principal -->
+  <main class="main-content">
+    <div class="container-fluid"> <!-- Cambiado a container-fluid para tener más espacio -->
+      <div class="page-header">
+        <h1 class="page-title">
+          <i class="fas fa-industry me-2"></i> Lay Out de Planta: {{ current_plant }}
+        </h1>
+      </div>
+
+      <!-- Contenedor de alertas -->
+      <div id="alertContainer"></div>
+
+      <div class="content-card">
+        <div class="card-header">
+          <h4 class="mb-0">
+            <i class="fas fa-list-alt me-2"></i> Configuración de Líneas
+          </h4>
+          <button id="addLineBtn" class="btn btn-primary btn-sm">
+            <i class="fas fa-plus me-1"></i> Agregar Línea
+          </button>
+        </div>
+        
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table layout-table" id="layoutTable">
+              <thead>
+                <tr>
+                  <th>BU</th>
+                  <th>Planta</th>
+                  <th>Categoría</th>
+                  <th>Línea</th>
+                  <th>Marca</th>
+                  <th>Modelo</th>
+                  <th>Pesadora</th>
+                  <th>Empacadora</th>
+                  <th>HIGH SPEED</th>
+                  <th>LOW SPEED</th>
+                  <th>SEAL CHECKER</th>
+                  <th>DACS</th>
+                  <th>RCC</th>
+                  <th>TERMA - TIRA SEMI AUTO</th>
+                  <th>FESTO</th>
+                  <th>HANCO</th>
+                  <th>GUACP</th>
+                  <th>PKG MANUAL</th>
+                  <th>PKG AUTO</th>
+                  <th>Pallet Auto</th>
+                  <th>NÚMERO DA EA</th>
+                  <th>Pesadoras Integrado con M.E.S.</th>
+                  <th>Guacp Integrado con M.E.S.</th>
+                  <th>Estatus Revisado</th>
+                  <th>*****</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                {% for linea in lineas %}
+                <tr data-id="{{ linea.id }}">
+                  <td><input type="text" name="bu" value="{{ linea.bu }}" readonly></td>
+                  <td><input type="text" name="planta" value="{{ linea.planta }}" readonly></td>
+                  <td>
+                    <select name="categoria" disabled>
+                      <option value="Automatico" {% if linea.categoria == 'Automatico' %}selected{% endif %}>Automático</option>
+                      <option value="Manual" {% if linea.categoria == 'Manual' %}selected{% endif %}>Manual</option>
+                    </select>
+                  </td>
+                  <td>
+                    <select name="linea" disabled>
+                      {% for l in lineas_config %}
+                        <option value="{{ l.nombre }}" {% if l.nombre == linea.linea %}selected{% endif %}>{{ l.nombre }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td><input type="text" name="marca" value="{{ linea.marca }}" disabled></td>
+                  <td><input type="text" name="modelo" value="{{ linea.modelo }}" disabled></td>
+                  <td><input type="text" name="pesadora" value="{{ linea.pesadora }}" disabled></td>
+                  <td><input type="text" name="empacadora" value="{{ linea.empacadora }}" disabled></td>
+                  <td><input type="text" name="high_speed" value="{{ linea.high_speed }}" disabled></td>
+                  <!-- Nuevas columnas -->
+                  <td><input type="text" name="low_speed" value="{{ linea.low_speed }}" disabled></td>
+                  <td><input type="text" name="seal_checker" value="{{ linea.seal_checker }}" disabled></td>
+                  <td><input type="text" name="dacs" value="{{ linea.dacs }}" disabled></td>
+                  <td><input type="text" name="rcc" value="{{ linea.rcc }}" disabled></td>
+                  <td><input type="text" name="terma_tira_semi_auto" value="{{ linea.terma_tira_semi_auto }}" disabled></td>
+                  <td><input type="text" name="festo" value="{{ linea.festo }}" disabled></td>
+                  <td><input type="text" name="hanco" value="{{ linea.hanco }}" disabled></td>
+                  <td><input type="text" name="guacp" value="{{ linea.guacp }}" disabled></td>
+                  <td><input type="text" name="pkg_manual" value="{{ linea.pkg_manual }}" disabled></td>
+                  <td><input type="text" name="pkg_auto" value="{{ linea.pkg_auto }}" disabled></td>
+                  <td><input type="text" name="pallet_auto" value="{{ linea.pallet_auto }}" disabled></td>
+                  <td><input type="text" name="numero_da_ea" value="{{ linea.numero_da_ea }}" disabled></td>
+                  <td><input type="text" name="pesadoras_mes" value="{{ linea.pesadoras_mes }}" disabled></td>
+                  <td><input type="text" name="guacp_mes" value="{{ linea.guacp_mes }}" disabled></td>
+                  <td><input type="text" name="estatus_revisado" value="{{ linea.estatus_revisado }}" disabled></td>
+                  <!-- Fin de nuevas columnas -->
+                  <td><input type="text" name="asteriscos" value="{{ linea.asteriscos }}" readonly disabled></td>
+                  <td class="action-buttons">
+                    <button class="action-btn save" onclick="saveRow(this)" title="Guardar">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button class="action-btn delete" onclick="deleteRow(this)" title="Borrar">
+                      <i class="fas fa-times"></i>
+                    </button>
+                    <button class="action-btn edit" onclick="editRow(this)" title="Editar">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="main-footer bg-dark text-white text-center py-3">
+    <div class="container">
+      <p class="mb-0">&copy; 2025 PepsiCo, Inc. Sistema de Gestión de KPI</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS y scripts personalizados -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Variables globales
+    var currentBU = "{{ current_bu }}";
+    var currentPlant = "{{ current_plant }}";
+    var lineasConfig = [
+      {% for l in lineas_config %}
+        { id: {{ l.id }}, nombre: "{{ l.nombre }}" },
+      {% endfor %}
+    ];
+
+    // Función para mostrar alertas personalizadas
+    function showAlert(type, message) {
+      const alertContainer = document.getElementById('alertContainer');
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-dismissible alert-custom fade show`;
+      alertDiv.innerHTML = `
+        <div class="d-flex align-items-center">
+          <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+          ${message}
+          <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `;
+      
+      alertContainer.appendChild(alertDiv);
+      
+      // Auto-eliminar la alerta después de 5 segundos
+      setTimeout(() => {
+        const bsAlert = new bootstrap.Alert(alertDiv);
+        bsAlert.close();
+      }, 5000);
+    }
+
+    // Validar campos antes de guardar
+    function validateRowData(row) {
+      // Verificamos solo los campos obligatorios (BU, Planta, Categoría y Línea)
+      // que ya vienen pre-completados o son select
+      const requiredSelects = row.querySelectorAll('select[name="categoria"], select[name="linea"]');
+      
+      for (let select of requiredSelects) {
+        if (!select.value) {
+          showAlert('danger', `El campo ${select.name} no puede estar vacío`);
+          select.focus();
+          return false;
+        }
+      }
+      
+      // Los campos de texto ahora pueden estar vacíos
+      return true;
+    }
+
+    // Agregar nueva fila
+    document.getElementById('addLineBtn').addEventListener('click', function() {
+      const tableBody = document.getElementById('tableBody');
+      const newRow = document.createElement('tr');
+      
+      newRow.innerHTML = `
+        <td><input type="text" name="bu" value="${currentBU}" readonly></td>
+        <td><input type="text" name="planta" value="${currentPlant}" readonly></td>
+        <td>
+          <select name="categoria">
+            <option value="Automatico" selected>Automático</option>
+            <option value="Manual">Manual</option>
+          </select>
+        </td>
+        <td>
+          <select name="linea">
+            ${lineasConfig.map(l => `<option value="${l.nombre}">${l.nombre}</option>`).join('')}
+          </select>
+        </td>
+        <td><input type="text" name="marca" value=""></td>
+        <td><input type="text" name="modelo" value=""></td>
+        <td><input type="text" name="pesadora" value=""></td>
+        <td><input type="text" name="empacadora" value=""></td>
+        <td><input type="text" name="high_speed" value=""></td>
+        <!-- Nuevos campos -->
+        <td><input type="text" name="low_speed" value=""></td>
+        <td><input type="text" name="seal_checker" value=""></td>
+        <td><input type="text" name="dacs" value=""></td>
+        <td><input type="text" name="rcc" value=""></td>
+        <td><input type="text" name="terma_tira_semi_auto" value=""></td>
+        <td><input type="text" name="festo" value=""></td>
+        <td><input type="text" name="hanco" value=""></td>
+        <td><input type="text" name="guacp" value=""></td>
+        <td><input type="text" name="pkg_manual" value=""></td>
+        <td><input type="text" name="pkg_auto" value=""></td>
+        <td><input type="text" name="pallet_auto" value=""></td>
+        <td><input type="text" name="numero_da_ea" value=""></td>
+        <td><input type="text" name="pesadoras_mes" value=""></td>
+        <td><input type="text" name="guacp_mes" value=""></td>
+        <td><input type="text" name="estatus_revisado" value=""></td>
+        <td><input type="text" name="asteriscos" value="*****" readonly></td>
+        <td class="action-buttons">
+          <button class="action-btn save" onclick="saveRow(this)" title="Guardar">
+            <i class="fas fa-check"></i>
+          </button>
+          <button class="action-btn delete" onclick="deleteRow(this)" title="Borrar">
+            <i class="fas fa-times"></i>
+          </button>
+          <button class="action-btn edit" onclick="editRow(this)" title="Editar">
+            <i class="fas fa-pencil-alt"></i>
+          </button>
+        </td>
+      `;
+      
+      tableBody.appendChild(newRow);
+      
+      // Enfocar el primer input editable
+      newRow.querySelector('input[name="marca"]').focus();
+    });
+
+    // Guardar o actualizar fila
+    function saveRow(btn) {
+      const row = btn.closest('tr');
+      
+      // Validar datos antes de guardar
+      if (!validateRowData(row)) return;
+
+      const data = {
+        bu: row.querySelector('input[name="bu"]').value,
+        planta: row.querySelector('input[name="planta"]').value,
+        categoria: row.querySelector('select[name="categoria"]').value,
+        linea: row.querySelector('select[name="linea"]').value,
+        marca: row.querySelector('input[name="marca"]').value,
+        modelo: row.querySelector('input[name="modelo"]').value,
+        pesadora: row.querySelector('input[name="pesadora"]').value,
+        empacadora: row.querySelector('input[name="empacadora"]').value,
+        high_speed: row.querySelector('input[name="high_speed"]').value,
+        // Nuevos campos
+        low_speed: row.querySelector('input[name="low_speed"]').value,
+        seal_checker: row.querySelector('input[name="seal_checker"]').value,
+        dacs: row.querySelector('input[name="dacs"]').value,
+        rcc: row.querySelector('input[name="rcc"]').value,
+        terma_tira_semi_auto: row.querySelector('input[name="terma_tira_semi_auto"]').value,
+        festo: row.querySelector('input[name="festo"]').value,
+        hanco: row.querySelector('input[name="hanco"]').value,
+        guacp: row.querySelector('input[name="guacp"]').value,
+        pkg_manual: row.querySelector('input[name="pkg_manual"]').value,
+        pkg_auto: row.querySelector('input[name="pkg_auto"]').value,
+        pallet_auto: row.querySelector('input[name="pallet_auto"]').value,
+        numero_da_ea: row.querySelector('input[name="numero_da_ea"]').value,
+        pesadoras_mes: row.querySelector('input[name="pesadoras_mes"]').value,
+        guacp_mes: row.querySelector('input[name="guacp_mes"]').value,
+        estatus_revisado: row.querySelector('input[name="estatus_revisado"]').value,
+        asteriscos: row.querySelector('input[name="asteriscos"]').value
+      };
+
+      const id = row.getAttribute('data-id');
+      const url = id 
+        ? "{{ url_for('actualizar_linea_planta', linea_id=0) }}".replace('/0', '/' + id)
+        : "{{ url_for('guardar_linea_planta') }}";
+
+      fetch(url, {
+        method: id ? 'PUT' : 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          showAlert('success', id ? 'Línea actualizada exitosamente' : 'Línea guardada exitosamente');
+          row.setAttribute('data-id', result.id);
+          row.querySelectorAll('input, select').forEach(input => input.disabled = true);
+        } else {
+          showAlert('danger', 'Error al guardar la línea');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showAlert('danger', 'Error en la solicitud');
+      });
+    }
+
+    // Borrar fila
+    function deleteRow(btn) {
+      const row = btn.closest('tr');
+      const id = row.getAttribute('data-id');
+
+      const confirmDelete = confirm('¿Está seguro de eliminar esta línea de producción?');
+      if (!confirmDelete) return;
+
+      if (id) {
+        const deleteUrl = "{{ url_for('borrar_linea_planta', linea_id=0) }}".replace('/0', '/' + id);
+        
+        fetch(deleteUrl, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            showAlert('success', 'Línea eliminada exitosamente');
+            row.remove();
+          } else {
+            showAlert('danger', 'Error al eliminar la línea');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showAlert('danger', 'Error en la solicitud');
+        });
+      } else {
+        // Para filas nuevas sin guardar
+        row.remove();
+      }
+    }
+
+    // Editar fila
+    function editRow(btn) {
+      const row = btn.closest('tr');
+      row.querySelectorAll('input:not([readonly]), select').forEach(input => {
+        input.disabled = false;
+      });
+      
+      // Enfocar el primer input editable
+      const firstEditableInput = row.querySelector('input:not([readonly]), select');
+      if (firstEditableInput) firstEditableInput.focus();
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,403 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "CloudFormation template for KPIs 2.0 CI/CD Pipeline",
+  "Parameters": {
+    "GitHubOwner": {
+      "Type": "String",
+      "Default": "Kershak-s",
+      "Description": "GitHub repository owner"
+    },
+    "GitHubRepo": {
+      "Type": "String",
+      "Default": "Kpis-2.0",
+      "Description": "GitHub repository name"
+    },
+    "GitHubBranch": {
+      "Type": "String",
+      "Default": "main",
+      "Description": "GitHub repository branch"
+    },
+    "GitHubToken": {
+      "Type": "String",
+      "NoEcho": true,
+      "Description": "GitHub OAuth token"
+    },
+    "EC2KeyName": {
+      "Type": "AWS::EC2::KeyPair::KeyName",
+      "Description": "Name of an existing EC2 KeyPair to enable SSH access to the instances"
+    },
+    "InstanceType": {
+      "Type": "String",
+      "Default": "t2.micro",
+      "Description": "EC2 instance type"
+    }
+  },
+  "Resources": {
+    "CodeBuildServiceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codebuild.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonS3FullAccess",
+          "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess"
+        ]
+      }
+    },
+    "CodeDeployServiceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codedeploy.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/service-role/AWSCodeDeployRole"
+        ]
+      }
+    },
+    "CodePipelineServiceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "codepipeline.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AWSCodeBuildAdminAccess",
+          "arn:aws:iam::aws:policy/AWSCodeDeployFullAccess",
+          "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        ]
+      }
+    },
+    "EC2InstanceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore",
+          "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforAWSCodeDeploy"
+        ]
+      }
+    },
+    "EC2InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "EC2InstanceRole"
+          }
+        ]
+      }
+    },
+    "ArtifactBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        }
+      }
+    },
+    "CodeBuildProject": {
+      "Type": "AWS::CodeBuild::Project",
+      "Properties": {
+        "Artifacts": {
+          "Type": "CODEPIPELINE"
+        },
+        "Environment": {
+          "Type": "LINUX_CONTAINER",
+          "ComputeType": "BUILD_GENERAL1_SMALL",
+          "Image": "aws/codebuild/amazonlinux2-x86_64-standard:3.0",
+          "PrivilegedMode": false
+        },
+        "Name": "KPIs-2-0-Build",
+        "ServiceRole": {
+          "Fn::GetAtt": [
+            "CodeBuildServiceRole",
+            "Arn"
+          ]
+        },
+        "Source": {
+          "Type": "CODEPIPELINE",
+          "BuildSpec": "buildspec.yml"
+        }
+      }
+    },
+    "EC2SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable HTTP and SSH access",
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "EC2Instance": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-0c55b159cbfafe1f0",
+        "InstanceType": {
+          "Ref": "InstanceType"
+        },
+        "SecurityGroups": [
+          {
+            "Ref": "EC2SecurityGroup"
+          }
+        ],
+        "KeyName": {
+          "Ref": "EC2KeyName"
+        },
+        "IamInstanceProfile": {
+          "Ref": "EC2InstanceProfile"
+        },
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "apt-get update\n",
+                "apt-get install -y ruby wget\n",
+                "cd /home/ubuntu\n",
+                "wget https://aws-codedeploy-us-east-1.s3.amazonaws.com/latest/install\n",
+                "chmod +x ./install\n",
+                "./install auto\n",
+                "service codedeploy-agent start\n"
+              ]
+            ]
+          }
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "KPIs-2.0-Server"
+          }
+        ]
+      }
+    },
+    "CodeDeployApplication": {
+      "Type": "AWS::CodeDeploy::Application",
+      "Properties": {
+        "ApplicationName": "KPIs-2-0-App",
+        "ComputePlatform": "Server"
+      }
+    },
+    "DeploymentGroup": {
+      "Type": "AWS::CodeDeploy::DeploymentGroup",
+      "Properties": {
+        "ApplicationName": {
+          "Ref": "CodeDeployApplication"
+        },
+        "DeploymentGroupName": "KPIs-2-0-DeploymentGroup",
+        "DeploymentConfigName": "CodeDeployDefault.AllAtOnce",
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "CodeDeployServiceRole",
+            "Arn"
+          ]
+        },
+        "Ec2TagFilters": [
+          {
+            "Key": "Name",
+            "Value": "KPIs-2.0-Server",
+            "Type": "KEY_AND_VALUE"
+          }
+        ]
+      }
+    },
+    "Pipeline": {
+      "Type": "AWS::CodePipeline::Pipeline",
+      "Properties": {
+        "ArtifactStore": {
+          "Type": "S3",
+          "Location": {
+            "Ref": "ArtifactBucket"
+          }
+        },
+        "Name": "KPIs-2-0-Pipeline",
+        "RoleArn": {
+          "Fn::GetAtt": [
+            "CodePipelineServiceRole",
+            "Arn"
+          ]
+        },
+        "Stages": [
+          {
+            "Name": "Source",
+            "Actions": [
+              {
+                "Name": "Source",
+                "ActionTypeId": {
+                  "Category": "Source",
+                  "Owner": "ThirdParty",
+                  "Provider": "GitHub",
+                  "Version": "1"
+                },
+                "Configuration": {
+                  "Owner": {
+                    "Ref": "GitHubOwner"
+                  },
+                  "Repo": {
+                    "Ref": "GitHubRepo"
+                  },
+                  "Branch": {
+                    "Ref": "GitHubBranch"
+                  },
+                  "OAuthToken": {
+                    "Ref": "GitHubToken"
+                  }
+                },
+                "OutputArtifacts": [
+                  {
+                    "Name": "SourceCode"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Name": "Build",
+            "Actions": [
+              {
+                "Name": "BuildAction",
+                "ActionTypeId": {
+                  "Category": "Build",
+                  "Owner": "AWS",
+                  "Provider": "CodeBuild",
+                  "Version": "1"
+                },
+                "Configuration": {
+                  "ProjectName": {
+                    "Ref": "CodeBuildProject"
+                  }
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "SourceCode"
+                  }
+                ],
+                "OutputArtifacts": [
+                  {
+                    "Name": "BuildOutput"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "Name": "Deploy",
+            "Actions": [
+              {
+                "Name": "DeployAction",
+                "ActionTypeId": {
+                  "Category": "Deploy",
+                  "Owner": "AWS",
+                  "Provider": "CodeDeploy",
+                  "Version": "1"
+                },
+                "Configuration": {
+                  "ApplicationName": {
+                    "Ref": "CodeDeployApplication"
+                  },
+                  "DeploymentGroupName": {
+                    "Ref": "DeploymentGroup"
+                  }
+                },
+                "InputArtifacts": [
+                  {
+                    "Name": "BuildOutput"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "WebsiteURL": {
+      "Description": "URL for the website",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "http://",
+            {
+              "Fn::GetAtt": [
+                "EC2Instance",
+                "PublicDnsName"
+              ]
+            }
+          ]
+        ]
+      }
+    },
+    "PipelineURL": {
+      "Description": "URL to the CodePipeline console",
+      "Value": {
+        "Fn::Join": [
+          "",
+          [
+            "https://console.aws.amazon.com/codepipeline/home?region=",
+            {
+              "Ref": "AWS::Region"
+            },
+            "#/view/",
+            {
+              "Ref": "Pipeline"
+            }
+          ]
+        ]
+      }
+    }
+  }
+}

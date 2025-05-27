@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carga de KPI´s del mes - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS y Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    /* Estilo para inputs de tiempo */
+    .time-input {
+      text-align: center;
+      font-family: monospace;
+    }
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+    }
+    
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header y Navegación */
+    .main-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white !important;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand .logo-circle {
+      background-color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand .logo-circle i {
+      color: var(--pepsico-blue);
+      font-size: 18px;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover,
+    .navbar-dark .navbar-nav .nav-link:focus {
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .navbar-dark .navbar-nav .nav-link.active {
+      color: white;
+      font-weight: 500;
+    }
+    
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 30px 0;
+    }
+    
+    .page-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .page-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 10px;
+    }
+    
+    /* Tarjetas y contenedores */
+    .content-card {
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 25px;
+      overflow: hidden;
+      border: none;
+    }
+    
+    .card-header {
+      background-color: var(--pepsico-blue);
+      color: white;
+      padding: 15px 20px;
+      font-weight: 600;
+    }
+    
+    .card-body {
+      padding: 20px;
+    }
+    
+    /* Dropzone */
+    #dropzone {
+      border: 2px dashed var(--pepsico-light-blue);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      color: var(--pepsico-light-blue);
+      margin-bottom: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background-color: rgba(3, 87, 160, 0.03);
+    }
+    
+    #dropzone.hover {
+      background-color: rgba(3, 87, 160, 0.1);
+      transform: scale(1.01);
+    }
+    
+    #dropzone i {
+      font-size: 48px;
+      margin-bottom: 15px;
+      color: var(--pepsico-light-blue);
+    }
+    
+    #dropzone p {
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+    
+    /* Botones */
+    .btn-action-group {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .btn-primary {
+      background-color: var(--pepsico-blue);
+      border-color: var(--pepsico-blue);
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--pepsico-dark-blue);
+      border-color: var(--pepsico-dark-blue);
+      transform: translateY(-2px);
+    }
+    
+    .btn-info {
+      background-color: var(--pepsico-light-blue);
+      border-color: var(--pepsico-light-blue);
+      color: white;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-info:hover, .btn-info:focus {
+      background-color: #0073ae;
+      border-color: #0073ae;
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .btn-secondary {
+      background-color: #6c757d;
+      border-color: #6c757d;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover, .btn-secondary:focus {
+      background-color: #5a6268;
+      border-color: #5a6268;
+      transform: translateY(-2px);
+    }
+    
+    /* Tabla de KPIs */
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: var(--pepsico-blue);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px 15px;
+      white-space: nowrap;
+    }
+    
+    .table tbody tr:nth-of-type(odd) {
+      background-color: rgba(3, 87, 160, 0.03);
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(3, 87, 160, 0.06);
+    }
+    
+    .table td {
+      padding: 10px 15px;
+      vertical-align: middle;
+    }
+    
+    /* Iconos y Acciones en tablas */
+    .action-btn {
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 6px;
+      font-size: 1rem;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 2px;
+      transition: all 0.2s ease;
+    }
+    
+    .action-btn.green {
+      color: white;
+      background-color: #28a745;
+    }
+    
+    .action-btn.red {
+      color: white;
+      background-color: var(--pepsico-red);
+    }
+    
+    .action-btn.edit {
+      color: white;
+      background-color: var(--pepsico-light-blue);
+    }
+    
+    .action-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    
+    /* Formulario elementos */
+    .form-select, .form-control {
+      border-radius: 6px;
+      border: 1px solid #ced4da;
+      padding: 8px 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .form-select:focus, .form-control:focus {
+      border-color: var(--pepsico-light-blue);
+      box-shadow: 0 0 0 0.25rem rgba(3, 87, 160, 0.25);
+    }
+    
+    /* Modal */
+    .modal-header {
+      background-color: var(--pepsico-blue);
+      color: white;
+    }
+    
+    .modal-content {
+      border-radius: 10px;
+      border: none;
+      overflow: hidden;
+    }
+    
+    /* Alertas */
+    .alert {
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      animation: fadeInUp 0.5s;
+    }
+    
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .action-btn {
+        padding: 4px;
+        font-size: 0.9rem;
+        width: 28px;
+        height: 28px;
+      }
+      
+      .btn-action-group {
+        flex-direction: column;
+      }
+      
+      .btn-action-group .btn {
+        width: 100%;
+      }
+    }
+    
+    /* Ajustes para inputs y selects en tablas */
+    .table input,
+    .table select {
+      min-width: 80px;
+      width: 100%;
+      padding: 0.25rem 0.5rem;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      background-color: #fff;
+    }
+    
+    .table input:disabled,
+    .table select:disabled {
+      background-color: #f8f9fa;
+      cursor: not-allowed;
+      border-color: #e9ecef;
+    }
+    
+    .table input:focus,
+    .table select:focus {
+      border-color: var(--pepsico-light-blue);
+      box-shadow: 0 0 0 0.2rem rgba(3, 87, 160, 0.25);
+      outline: none;
+    }
+    
+    /* Asegurar que las celdas tengan suficiente padding */
+    .table td {
+      padding: 0.5rem 0.75rem;
+      vertical-align: middle;
+    }
+    
+    /* Ajustar anchuras específicas para tipos de columnas */
+    .table .narrow-col {
+      width: 80px;
+    }
+    
+    .table .medium-col {
+      width: 120px;
+    }
+    
+    .table .wide-col {
+      width: 180px;
+    }
+    
+    /* Mejorar visibilidad de los inputs numéricos */
+    .table input[type="number"] {
+      text-align: right;
+    }
+    
+    /* Estilos para inputs readonly */
+    .table input[readonly] {
+      background-color: #e9ecef;
+      cursor: default;
+    }
+
+    /* Estilos mejorados para las tablas */
+    .table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-bottom: 1rem;
+    }
+
+    .table th {
+      text-align: center;
+      padding: 12px 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .table td {
+      padding: 12px 8px;
+      vertical-align: middle;
+    }
+
+    /* Tamaños específicos para cada columna */
+    .table .col-linea {
+      width: 15%;
+      min-width: 150px;
+    }
+
+    .table .col-mes,
+    .table .col-anio {
+      width: 8%;
+      min-width: 80px;
+    }
+
+    .table .col-indicador {
+      width: 8%;
+      min-width: 100px;
+    }
+
+    .table .col-acciones {
+      width: 10%;
+      min-width: 120px;
+      text-align: center;
+    }
+
+    /* Estilos para los inputs */
+    .table input.form-control,
+    .table select.form-select {
+      padding: 0.5rem;
+      height: 38px;
+      font-size: 0.95rem;
+      width: 100%;
+      border: 1px solid #ced4da;
+    }
+
+    .table input:disabled,
+    .table select:disabled,
+    .table input[readonly] {
+      background-color: #f8f9fa;
+      opacity: 1;
+    }
+
+    /* Destacar valores en campos numéricos */
+    .table input[type="number"] {
+      text-align: right;
+      font-weight: 500;
+    }
+
+    /* Estilo para valores porcentuales */
+    .table .percent-field::after {
+      content: "%";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6c757d;
+    }
+
+    .table .percent-field-container {
+      position: relative;
+    }
+
+    /* Mejorar visibilidad de filas en hover */
+    .table tbody tr:hover {
+      background-color: rgba(3, 87, 160, 0.08);
+      transition: background-color 0.2s ease;
+    }
+
+    /* Colores para valores de eficiencia */
+    .efficiency-high {
+      color: #28a745 !important;
+    }
+
+    .efficiency-medium {
+      color: #fd7e14 !important;
+    }
+
+    .efficiency-low {
+      color: #dc3545 !important;
+    }
+
+    /* Notificación toast personalizada */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1050;
+    }
+
+    .toast {
+      min-width: 280px;
+      background-color: white;
+      border-radius: 8px;
+      border-left: 4px solid #28a745;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      overflow: hidden;
+      margin-bottom: 10px;
+      animation: toastIn 0.3s ease forwards;
+    }
+
+    .toast.error {
+      border-left-color: #dc3545;
+    }
+
+    .toast.warning {
+      border-left-color: #ffc107;
+    }
+
+    .toast-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      background-color: white;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .toast-body {
+      padding: 12px 15px;
+    }
+
+    .toast-icon {
+      font-size: 18px;
+      margin-right: 10px;
+    }
+
+    .toast-icon.success {
+      color: #28a745;
+    }
+
+    .toast-icon.error {
+      color: #dc3545;
+    }
+
+    .toast-icon.warning {
+      color: #ffc107;
+    }
+
+    .toast-title {
+      font-weight: 600;
+      flex-grow: 1;
+    }
+
+    .toast-close {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #6c757d;
+      padding: 0;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    @keyframes toastIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+    
+    /* Estilo para modal de éxito */
+    #successModal .modal-header {
+      background-color: #28a745;
+    }
+    
+    #successModal .modal-body {
+      padding: 2rem 1rem;
+    }
+    
+    #successModal .success-icon {
+      font-size: 64px;
+      color: #28a745;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <header class="main-header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+          <div class="logo-circle">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          PepsiCo KPI System
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('carga_kpis') }}">
+                <i class="fas fa-chart-line me-1"></i> Carga de KPI´s
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('dashboard') }}">
+                <i class="fas fa-tachometer-alt me-1"></i> Dashboard
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+<!-- Contenido principal -->
+<main class="main-content">
+  <div class="container">
+    <!-- Encabezado de página -->
+    <div class="page-header">
+      <h1 class="page-title">Carga de KPI´s del mes</h1>
+    </div>
+    
+    <!-- Bloque de mensajes flash -->
+    <div id="alertContainer">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+              <i class="fas fa-info-circle me-2"></i> {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+      <!-- Notificación de fecha límite -->
+{% if deadline_passed %}
+<div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-exclamation-triangle me-2"></i>
+    <div>
+      <strong>¡Atención!</strong> La fecha límite para cargar datos del mes actual ha pasado ({{ deadline_formatted }}).
+      <br>
+      <small>Puedes continuar cargando datos, pero considera que ya se ha superado la fecha límite establecida.</small>
+    </div>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+</div>
+{% else %}
+<div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-info-circle me-2"></i>
+    <div>
+      <strong>Información:</strong> La fecha límite para cargar datos del mes actual es el {{ deadline_formatted }}.
+    </div>
+    <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+</div>
+{% endif %}
+    </div>
+    
+    <!-- Sección de carga de archivos -->
+    <div class="content-card">
+      <div class="card-header">
+        <i class="fas fa-file-upload me-2"></i> Carga de Archivo Excel
+      </div>
+      <div class="card-body">
+        <div class="btn-action-group">
+          <a href="{{ url_for('download_template_kpi') }}" class="btn btn-secondary">
+            <i class="fas fa-download me-2"></i> Descargar Plantilla
+          </a>
+          <div>
+            <button id="addKpiBtn" class="btn btn-primary">
+              <i class="fas fa-plus me-2"></i> Agregar KPI
+            </button>
+            <button id="viewKpiBtn" class="btn btn-info">
+              <i class="fas fa-eye me-2"></i> Ver Registro
+            </button>
+          </div>
+        </div>
+        
+        <!-- Área de Drag & Drop para subir archivo -->
+        <div id="dropzone">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Arrastra y suelta el archivo Excel aquí o haz clic para seleccionarlo.</p>
+          <input type="file" id="fileInput" name="file" accept=".xlsx" style="display:none;">
+        </div>
+        <form action="{{ url_for('upload_template_kpi') }}" method="POST" enctype="multipart/form-data" id="uploadForm" style="display:none;">
+          <input type="file" name="file" id="fileFormInput" accept=".xlsx">
+        </form>
+      </div>
+    </div>
+    
+    <!-- Tabla de KPIs -->
+    <div class="content-card">
+      <div class="card-header">
+        <i class="fas fa-table me-2"></i> Registro de KPI´s
+      </div>
+      <div class="card-body">
+        <div class="table-container">
+          <table class="table" id="kpiTable">
+            <thead>
+              <tr>
+                <th>Línea</th>
+                <th>Mes</th>
+                <th>Año</th>
+                <th>Ef. Pesadora (%)</th>
+                <th>Ef. Empaque (%)</th>
+                <th>Ef. DME (%)</th>
+                <th>Sobre Grameaje (%)</th>
+                <th>Ef. GUACP (%)</th>
+                <th>MTBF</th>
+                <th>MTTR</th>
+                <th>Ef. Espera (%)</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <!-- Tabla de KPIs ordenada por fecha (más reciente primero) -->
+              <tbody id="kpiTableBody">
+                {% for kpi in kpis|sort(attribute='anio,mes', reverse=True) %}
+                <tr data-id="{{ kpi.id }}">
+                  <td>
+                    <select class="form-select" name="linea" disabled>
+                      {% for l in lineas_config %}
+                        <option value="{{ l.nombre }}" {% if l.nombre == kpi.linea %}selected{% endif %}>{{ l.nombre }}</option>
+                      {% endfor %}
+                    </select>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" value="{{ ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'][kpi.mes-1] }}" readonly>
+                    <input type="hidden" name="mes" value="{{ kpi.mes }}">
+                  </td>
+                  <td>
+                    <input type="text" class="form-control" value="{{ kpi.anio }}" readonly>
+                    <input type="hidden" name="anio" value="{{ kpi.anio }}">
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_pesadora" value="{{ kpi.eficiencia_pesadora }}" onchange="validateEfficiency(this)" disabled>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_empaque" value="{{ kpi.eficiencia_empaque }}" onchange="validateEfficiency(this)" disabled>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_dme" value="{{ kpi.eficiencia_dme }}" onchange="validateEfficiency(this)" disabled>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="100" step="0.01" class="form-control" name="sobre_gramaje" value="{{ kpi.sobre_gramaje }}" onchange="validateEfficiency(this)" disabled>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_guacp" value="{{ kpi.eficiencia_guacp }}" onchange="validateEfficiency(this)" disabled>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control time-input" name="mtbf" value="{{ kpi.mtbf|format_hours if kpi.mtbf else '' }}" placeholder="HH:MM:SS" disabled>
+                  </td>
+                  <td>
+                    <input type="text" class="form-control time-input" name="mttr" value="{{ kpi.mttr|format_hours if kpi.mttr else '' }}" placeholder="HH:MM:SS" disabled>
+                  </td>
+                  <td>
+                    <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_espera_producto" value="{{ kpi.eficiencia_espera_producto }}" onchange="validateEfficiency(this)" disabled>
+                  </td>
+                  <td>
+                    <button class="action-btn green" onclick="saveKpi(this)" title="Guardar">
+                      <i class="fas fa-check"></i>
+                    </button>
+                    <button class="action-btn red" onclick="deleteKpi(this)" title="Borrar">
+                      <i class="fas fa-times"></i>
+                    </button>
+                    <button class="action-btn edit" onclick="editKpi(this)" title="Editar">
+                      <i class="fas fa-pencil-alt"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal para ver registros -->
+<div class="modal fade" id="kpiModal" tabindex="-1" aria-labelledby="kpiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="kpiModalLabel">
+           <i class="fas fa-history me-2"></i> Registros de KPI por Año
+         </h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+       </div>
+       <div class="modal-body" id="kpiRecordsContainer">
+         <!-- Aquí se cargará la información agrupada por año -->
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+           <i class="fas fa-times me-2"></i> Cerrar
+         </button>
+       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de éxito para confirmación de guardado -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title"><i class="fas fa-check-circle me-2"></i> Operación Exitosa</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center py-4">
+          <i class="fas fa-check-circle success-icon"></i>
+          <h4 class="mt-3" id="successModalMessage">KPI guardado correctamente</h4>
+          <p class="text-muted" id="successModalDetail"></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenedor para las notificaciones toast -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Bootstrap JS y scripts personalizados -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Función para validar campos de eficiencia
+  function validateEfficiency(input) {
+    var value = parseFloat(input.value);
+    if (value < 0 || value > 100) {
+      showToast("Error de validación", "El valor debe estar entre 0 y 100", "error");
+      input.focus();
+      input.value = "";
+    }
+  }
+  
+  // Lista de líneas configuradas, pasada desde el backend
+  var lineasConfig = [
+    {% for l in lineas_config %}
+      { id: {{ l.id }}, nombre: "{{ l.nombre }}" },
+    {% endfor %}
+  ];
+  
+  // Función para guardar un KPI (nuevo o existente)
+// Función para guardar un KPI (nuevo o existente)
+function saveKpi(btn) {
+  var row = btn.closest('tr');
+  
+  // Validar los campos de tiempo
+  const mtbfInput = row.querySelector('input[name="mtbf"]');
+  const mttrInput = row.querySelector('input[name="mttr"]');
+  
+  if (!validateTimeFormat(mtbfInput) || !validateTimeFormat(mttrInput)) {
+    return;
+  }
+  
+  // Comprobamos si el mes está en un select o en un input hidden
+  var mesElement = row.querySelector('select[name="mes"]') || row.querySelector('input[name="mes"]');
+  var anioElement = row.querySelector('input[name="anio"]:not([type="hidden"])') || row.querySelector('input[name="anio"][type="hidden"]');
+  
+  if (!mesElement || !anioElement) {
+    showToast("Error", "No se pudieron encontrar los elementos de mes o año", "error");
+    return;
+  }
+  
+  var data = {
+    linea: row.querySelector('select[name="linea"]').value,
+    mes: mesElement.value,
+    anio: anioElement.value,
+    eficiencia_pesadora: row.querySelector('input[name="eficiencia_pesadora"]').value,
+    eficiencia_empaque: row.querySelector('input[name="eficiencia_empaque"]').value,
+    eficiencia_dme: row.querySelector('input[name="eficiencia_dme"]').value,
+    sobre_gramaje: row.querySelector('input[name="sobre_gramaje"]').value,
+    eficiencia_guacp: row.querySelector('input[name="eficiencia_guacp"]').value,
+    mtbf: timeToDecimal(mtbfInput.value),
+    mttr: timeToDecimal(mttrInput.value),
+    eficiencia_espera_producto: row.querySelector('input[name="eficiencia_espera_producto"]').value
+  };
+  
+  // Validar que todos los campos obligatorios estén completos
+  for (var key in data) {
+    if (data[key] === "" && key !== 'id') {
+      showToast("Error de validación", `El campo ${key} es requerido`, "error");
+      var field = row.querySelector(`[name="${key}"]`);
+      if (field && !field.hasAttribute('readonly') && field.type !== 'hidden') {
+        field.focus();
+      }
+      return;
+    }
+  }
+  
+  // Determinar si es una actualización o un nuevo registro
+  var id = row.getAttribute('data-id');
+  if (id) {
+    // Actualizar KPI existente
+    var urlTemplate = "{{ url_for('actualizar_kpi', kpi_id=0) }}";
+    var updateUrl = urlTemplate.replace('/0', '/' + id);
+    
+    fetch(updateUrl, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+      if(result.success) {
+        showToast("Éxito", "KPI actualizado correctamente", "success");
+        row.setAttribute('data-id', result.id);
+        row.querySelectorAll('input, select').forEach(input => input.disabled = true);
+        
+        // Mostrar modal de éxito
+        document.getElementById('successModalMessage').textContent = "KPI actualizado correctamente";
+        document.getElementById('successModalDetail').textContent = `Línea: ${data.linea}, Periodo: ${getMonthName(data.mes)} ${data.anio}`;
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+        
+        // Mostrar advertencia si existe
+        if(result.warning) {
+          setTimeout(() => {
+            showToast("Advertencia", result.warning, "warning");
+          }, 1000);
+        }
+      } else {
+        if(result.exists && confirm(result.message + " ¿Desea sobrescribir?")) {
+          var urlTemplate = "{{ url_for('actualizar_kpi', kpi_id=0) }}";
+          var updateUrl = urlTemplate.replace('/0', '/' + result.id);
+          fetch(updateUrl, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(data)
+          })
+          .then(response => response.json())
+          .then(res => {
+            if(res.success) {
+              showToast("Éxito", "KPI sobrescrito correctamente", "success");
+              row.setAttribute('data-id', res.id);
+              row.querySelectorAll('input, select').forEach(input => input.disabled = true);
+              
+              // Mostrar modal de éxito
+              document.getElementById('successModalMessage').textContent = "KPI sobrescrito correctamente";
+              document.getElementById('successModalDetail').textContent = `Línea: ${data.linea}, Periodo: ${getMonthName(data.mes)} ${data.anio}`;
+              const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+              successModal.show();
+            } else {
+              showToast("Error", "No se pudo actualizar el KPI", "error");
+            }
+          });
+        } else {
+          showToast("Información", "Operación cancelada", "warning");
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast("Error", "Error en la comunicación con el servidor", "error");
+    });
+  } else {
+    // Crear nuevo KPI
+    fetch("{{ url_for('guardar_kpi') }}", {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+      if(result.success) {
+        showToast("Éxito", "KPI guardado correctamente", "success");
+        row.setAttribute('data-id', result.id);
+        row.querySelectorAll('input, select').forEach(input => input.disabled = true);
+        
+        // Mostrar modal de éxito
+        document.getElementById('successModalMessage').textContent = "KPI guardado correctamente";
+        document.getElementById('successModalDetail').textContent = `Línea: ${data.linea}, Periodo: ${getMonthName(data.mes)} ${data.anio}`;
+        const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+        successModal.show();
+        
+        // Mostrar advertencia si existe
+        if(result.warning) {
+          setTimeout(() => {
+            showToast("Advertencia", result.warning, "warning");
+          }, 1000);
+        }
+      } else {
+        if(result.deadline_passed) {
+          // Mostrar error específico de fecha límite
+          showToast("Error", result.error, "error");
+        } else if(result.exists) {
+          // Mostrar mensaje de KPI existente (posiblemente por otro usuario)
+          showToast("Error", result.message, "error");
+        } else {
+          showToast("Error", "Error al guardar el KPI", "error");
+        }
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      showToast("Error", "Error en la comunicación con el servidor", "error");
+    });
+  }
+}
+
+    
+    
+  // Función para eliminar un KPI
+  function deleteKpi(btn) {
+    if (!confirm("⚠️ ¿Estás seguro de que deseas eliminar este KPI?")) {
+      return;
+    }
+    
+    var row = btn.closest('tr');
+    var id = row.getAttribute('data-id');
+    
+    if (id) {
+      // Si el KPI está guardado en la base de datos, eliminarlo mediante API
+      var urlTemplate = "{{ url_for('borrar_kpi', kpi_id=0) }}";
+      var deleteUrl = urlTemplate.replace('/0', '/' + id);
+      
+      fetch(deleteUrl, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(result => {
+          if (result.success) {
+            row.remove();
+            showToast("Éxito", "KPI eliminado correctamente", "success");
+          } else {
+            showToast("Error", "No se pudo eliminar el KPI", "error");
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showToast("Error", "Error en la comunicación con el servidor", "error");
+        });
+    } else {
+      // Si es un KPI nuevo que aún no se ha guardado, simplemente eliminar la fila
+      row.remove();
+      showToast("Información", "Fila eliminada", "warning");
+    }
+  }
+
+  // Función para editar un KPI
+  function editKpi(btn) {
+    var row = btn.closest('tr');
+    row.querySelectorAll('input, select').forEach(input => {
+      input.disabled = false;
+    });
+    
+    // Enfocar el primer input editable
+    var firstEditable = row.querySelector('input:not([readonly]), select:not([disabled])');
+    if (firstEditable) firstEditable.focus();
+    
+    showToast("Información", "KPI en modo edición", "warning");
+  }
+
+  // Función para mostrar notificaciones toast
+  function showToast(title, message, type = "success") {
+    const toastContainer = document.getElementById('toastContainer');
+    const toastId = 'toast-' + Date.now();
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.id = toastId;
+    
+    toast.innerHTML = `
+      <div class="toast-header">
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'} toast-icon ${type}"></i>
+        <span class="toast-title">${title}</span>
+        <button class="toast-close" onclick="closeToast('${toastId}')">×</button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    `;
+    
+    toastContainer.appendChild(toast);
+    
+    // Auto-cerrar después de 5 segundos
+    setTimeout(() => {
+      closeToast(toastId);
+    }, 5000);
+  }
+
+  // Función para cerrar un toast específico
+  function closeToast(toastId) {
+    const toast = document.getElementById(toastId);
+    if (toast) {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(100%)';
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    }
+  }
+
+  // Ver registros de KPI
+  document.getElementById('viewKpiBtn').addEventListener('click', function() {
+    fetch('{{ url_for("get_kpis") }}')
+      .then(response => response.json())
+      .then(data => {
+        const container = document.getElementById('kpiRecordsContainer');
+        container.innerHTML = '';
+        
+        if (Object.keys(data).length === 0) {
+          container.innerHTML = `
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle me-2"></i> No hay registros de KPI disponibles.
+            </div>
+          `;
+        } else {
+          // Ordenar años de mayor a menor
+          const years = Object.keys(data).sort((a, b) => b - a);
+          
+          for (const year of years) {
+            const yearCard = document.createElement('div');
+            yearCard.className = 'card mb-4';
+            
+            yearCard.innerHTML = `
+              <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Año ${year}</h5>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Mes</th>
+                        <th>Línea</th>
+                        <th>Ef. Pesadora</th>
+                        <th>Ef. Empaque</th>
+                        <th>Ef. DME</th>
+                        <th>Sobre Grameaje</th>
+                        <th>Ef. GUACP</th>
+                        <th>MTBF</th>
+                        <th>MTTR</th>
+                        <th>Ef. Espera</th>
+                        <th>Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody id="kpiTable-${year}"></tbody>
+                  </table>
+                </div>
+              </div>
+            `;
+            
+            container.appendChild(yearCard);
+            
+            const tbody = document.getElementById(`kpiTable-${year}`);
+            
+            // Ordenar meses de mayor a menor
+            const months = Object.keys(data[year]).sort((a, b) => b - a);
+            
+            for (const month of months) {
+              const kpi = data[year][month];
+              const monthNames = [
+                'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+              ];
+              
+              const row = document.createElement('tr');
+              row.setAttribute('data-id', kpi.id);
+              
+              row.innerHTML = `
+                <td>${monthNames[parseInt(month) - 1]}</td>
+                <td>${kpi.linea}</td>
+                <td>${kpi.eficiencia_pesadora}%</td>
+                <td>${kpi.eficiencia_empaque}%</td>
+                <td>${kpi.eficiencia_dme}%</td>
+                <td>${kpi.sobre_gramaje}%</td>
+                <td>${kpi.eficiencia_guacp}%</td>
+                <td>${decimalToTime(kpi.mtbf)}</td>
+                <td>${decimalToTime(kpi.mttr)}</td>
+                <td>${kpi.eficiencia_espera_producto}%</td>
+                <td>
+                  <button class="btn btn-sm btn-primary edit-modal-btn" onclick="editKpiModal(${kpi.id})">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" onclick="deleteKpiModal(${kpi.id})">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </td>
+              `;
+              
+              tbody.appendChild(row);
+            }
+          }
+        }
+        
+        // Mostrar el modal
+        const kpiModal = new bootstrap.Modal(document.getElementById('kpiModal'));
+        kpiModal.show();
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showToast("Error", "Error al cargar los registros de KPI", "error");
+      });
+  });
+
+  // Funciones para editar y eliminar desde el modal
+  function editKpiModal(id) {
+    // Cerrar el modal actual
+    const kpiModal = bootstrap.Modal.getInstance(document.getElementById('kpiModal'));
+    kpiModal.hide();
+    
+    // Buscar el registro en la tabla principal
+    const rows = document.querySelectorAll('#kpiTableBody tr');
+    for (const row of rows) {
+      if (row.getAttribute('data-id') == id) {
+        // Habilitar edición
+        row.querySelectorAll('input, select').forEach(input => {
+          input.disabled = false;
+        });
+        // Enfocar el primer input editable
+        row.querySelector('input:not([readonly]), select:not([disabled])').focus();
+        
+        // Scroll a la fila
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Resaltar la fila brevemente
+        row.classList.add('bg-light');
+        setTimeout(() => {
+          row.classList.remove('bg-light');
+        }, 2000);
+        
+        showToast("Información", "KPI en modo edición", "warning");
+        break;
+      }
+    }
+  }
+
+  function deleteKpiModal(id) {
+    if (confirm('¿Está seguro de eliminar este registro de KPI?')) {
+      // Cerrar el modal actual
+      const kpiModal = bootstrap.Modal.getInstance(document.getElementById('kpiModal'));
+      kpiModal.hide();
+      
+      // Eliminar el registro
+      fetch(`{{ url_for('borrar_kpi', kpi_id=0) }}`.replace('/0', `/${id}`), {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(result => {
+        if (result.success) {
+          showToast("Éxito", "KPI eliminado correctamente", "success");
+          
+          // Eliminar de la tabla si existe
+          const row = document.querySelector(`#kpiTableBody tr[data-id="${id}"]`);
+          if (row) {
+            row.remove();
+          }
+          
+          // Recargar datos después de 1 segundo
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          showToast("Error", "No se pudo eliminar el KPI", "error");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showToast("Error", "Error en la comunicación con el servidor", "error");
+      });
+    }
+  }
+
+  // Para la carga de archivos mediante drag & drop
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const uploadForm = document.getElementById('uploadForm');
+  const fileFormInput = document.getElementById('fileFormInput');
+
+  // Abrir el selector de archivos al hacer clic en el dropzone
+  dropzone.addEventListener('click', function() {
+    fileInput.click();
+  });
+
+  // Manejar la selección de archivos
+  fileInput.addEventListener('change', function() {
+    if (fileInput.files.length > 0) {
+      uploadFile(fileInput.files[0]);
+    }
+  });
+
+  // Drag & Drop eventos
+  dropzone.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    dropzone.classList.add('hover');
+  });
+
+  dropzone.addEventListener('dragleave', function() {
+    dropzone.classList.remove('hover');
+  });
+
+  dropzone.addEventListener('drop', function(e) {
+    e.preventDefault();
+    dropzone.classList.remove('hover');
+    
+    if (e.dataTransfer.files.length > 0) {
+      uploadFile(e.dataTransfer.files[0]);
+    }
+  });
+
+  // Función para subir el archivo
+  function uploadFile(file) {
+    if (!file.name.endsWith('.xlsx')) {
+      showToast("Error", "El archivo debe ser Excel (.xlsx)", "error");
+      return;
+    }
+    
+    // Transferir el archivo al input del formulario
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(file);
+    fileFormInput.files = dataTransfer.files;
+    
+    // Mostrar indicador de carga
+    dropzone.innerHTML = `
+      <div class="d-flex flex-column align-items-center">
+        <div class="spinner-border text-primary mb-3" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p>Subiendo archivo, por favor espere...</p>
+      </div>
+    `;
+    
+    // Enviar el formulario
+    uploadForm.submit();
+  }
+
+  // Función para resaltar el mes actual y mostrar el estado de carga
+  function highlightCurrentMonth() {
+    // Obtener fecha actual
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth() + 1; // getMonth() retorna 0-11
+    const currentYear = currentDate.getFullYear();
+    
+    // Comprobar si tenemos datos para el mes actual
+    let hasDataForCurrentMonth = false;
+    let currentMonthLineas = [];
+    
+    // Revisar todas las filas de la tabla
+    document.querySelectorAll('#kpiTableBody tr').forEach(row => {
+      const mesInput = row.querySelector('input[name="mes"]');
+      const anioInput = row.querySelector('input[name="anio"]');
+      const lineaSelect = row.querySelector('select[name="linea"]');
+      
+      if (mesInput && anioInput && lineaSelect) {
+        const rowMonth = parseInt(mesInput.value);
+        const rowYear = parseInt(anioInput.value);
+        const linea = lineaSelect.value;
+        
+        if (rowMonth === currentMonth && rowYear === currentYear) {
+          hasDataForCurrentMonth = true;
+          currentMonthLineas.push(linea);
+          
+          // Resaltar visualmente esta fila
+          row.style.backgroundColor = 'rgba(25, 135, 84, 0.1)';
+          row.style.borderLeft = '3px solid #198754';
+        }
+      }
+    });
+    
+    // Mostrar un mensaje sobre el estado de carga del mes actual
+    const alertContainer = document.getElementById('alertContainer');
+    if (alertContainer) {
+      const statusAlert = document.createElement('div');
+      
+      if (hasDataForCurrentMonth) {
+        // Hay datos para el mes actual
+        statusAlert.className = 'alert alert-success';
+        statusAlert.innerHTML = `
+          <i class="fas fa-check-circle me-2"></i>
+          <strong>Mes actual (${getMonthName(currentMonth)} ${currentYear}):</strong> 
+          Tienes datos cargados para las líneas: ${currentMonthLineas.join(', ')}.
+        `;
+      } else {
+        // No hay datos para el mes actual
+        statusAlert.className = 'alert alert-warning';
+        statusAlert.innerHTML = `
+          <i class="fas fa-exclamation-triangle me-2"></i>
+          <strong>Mes actual (${getMonthName(currentMonth)} ${currentYear}):</strong> 
+          No tienes datos cargados para este mes. Usa el botón "Agregar KPI" para cargar datos.
+        `;
+      }
+      
+      // Insertar al principio del contenedor
+      alertContainer.insertBefore(statusAlert, alertContainer.firstChild);
+    }
+  }
+  
+  // Función auxiliar para obtener el nombre del mes
+  function getMonthName(monthNumber) {
+    const monthNames = [
+      'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+      'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+    ];
+    return monthNames[monthNumber - 1];
+  }
+  
+  // Ejecutar cuando el DOM esté completamente cargado
+  document.addEventListener('DOMContentLoaded', function() {
+    highlightCurrentMonth();
+    
+    // Actualizar los placeholders de los campos de tiempo para incluir segundos
+    document.querySelectorAll('.time-input').forEach(input => {
+      input.placeholder = "HH:MM:SS";
+    });
+    
+    // CAMBIO IMPORTANTE: Solo un event listener para el botón "Agregar KPI"
+    document.getElementById('addKpiBtn').addEventListener('click', function() {
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1;
+      const currentYear = currentDate.getFullYear();
+      
+      // Verificar si ya hay líneas configuradas
+      const lineasConfig = [
+        {% for l in lineas_config %}
+          { id: {{ l.id }}, nombre: "{{ l.nombre }}" },
+        {% endfor %}
+      ];
+      
+      if (lineasConfig.length === 0) {
+        showToast("Error", "No hay líneas configuradas. Debe configurar líneas antes de cargar KPIs.", "error");
+        return;
+      }
+      
+      // Comprobar qué líneas ya tienen datos para el mes actual
+      const lineasConDatos = [];
+      document.querySelectorAll('#kpiTableBody tr').forEach(row => {
+        const mesInput = row.querySelector('input[name="mes"]');
+        const anioInput = row.querySelector('input[name="anio"]');
+        const lineaSelect = row.querySelector('select[name="linea"]');
+        
+        if (mesInput && anioInput && lineaSelect) {
+          const rowMonth = parseInt(mesInput.value);
+          const rowYear = parseInt(anioInput.value);
+          const linea = lineaSelect.value;
+          
+          if (rowMonth === currentMonth && rowYear === currentYear) {
+            lineasConDatos.push(linea);
+          }
+        }
+      });
+      
+      // Filtrar líneas disponibles (que no tengan datos para el mes actual)
+      const lineasDisponibles = lineasConfig.filter(l => !lineasConDatos.includes(l.nombre));
+      
+      if (lineasDisponibles.length === 0) {
+        showToast("Información", "Ya tienes datos cargados para todas las líneas en el mes actual.", "warning");
+        return;
+      }
+      
+      // Continuar con la creación de la nueva fila...
+      var tbody = document.getElementById('kpiTableBody');
+      var newRow = document.createElement('tr');      
+      
+      // Código para crear la nueva fila
+      var monthNames = [
+        "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+        "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+      ];
+      
+      newRow.innerHTML = `
+        <td>
+          <select class="form-select" name="linea">
+            ${lineasDisponibles.map(l => `<option value="${l.nombre}">${l.nombre}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <input type="text" class="form-control" value="${monthNames[currentMonth-1]}" readonly>
+          <input type="hidden" name="mes" value="${currentMonth}">
+        </td>
+        <td>
+          <input type="text" class="form-control" value="${currentYear}" readonly>
+          <input type="hidden" name="anio" value="${currentYear}">
+        </td>
+        <td>
+          <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_pesadora" value="" onchange="validateEfficiency(this)">
+        </td>
+        <td>
+          <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_empaque" value="" onchange="validateEfficiency(this)">
+        </td>
+        <td>
+          <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_dme" value="" onchange="validateEfficiency(this)">
+        </td>
+        <td>
+          <input type="number" min="0" max="100" step="0.01" class="form-control" name="sobre_gramaje" value="" onchange="validateEfficiency(this)">
+        </td>
+        <td>
+          <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_guacp" value="" onchange="validateEfficiency(this)">
+        </td>
+        <td>
+          <input type="text" class="form-control time-input" name="mtbf" value="" placeholder="HH:MM:SS">
+        </td>
+        <td>
+          <input type="text" class="form-control time-input" name="mttr" value="" placeholder="HH:MM:SS">
+        </td>
+        <td>
+          <input type="number" min="0" max="100" step="0.01" class="form-control" name="eficiencia_espera_producto" value="" onchange="validateEfficiency(this)">
+        </td>
+        <td>
+          <button class="action-btn green" onclick="saveKpi(this)" title="Guardar">
+            <i class="fas fa-check"></i>
+          </button>
+          <button class="action-btn red" onclick="deleteKpi(this)" title="Borrar">
+            <i class="fas fa-times"></i>
+          </button>
+        </td>
+      `;
+  
+      // Insertar la nueva fila
+      if (tbody.firstChild) {
+        tbody.insertBefore(newRow, tbody.firstChild);
+      } else {
+        tbody.appendChild(newRow);
+      }
+      
+      // Aplicar estilo de "mes actual" a la nueva fila
+      newRow.style.backgroundColor = 'rgba(25, 135, 84, 0.1)';
+      newRow.style.borderLeft = '3px solid #198754';
+      
+      // Enfocar el selector de línea
+      newRow.querySelector('select[name="linea"]').focus();
+    });
+    
+    // Mejorar la función saveKpi para verificar duplicados
+    window.originalSaveKpi = window.saveKpi;
+    window.saveKpi = function(btn) {
+      var row = btn.closest('tr');
+      
+      // Validar datos
+      var linea = row.querySelector('select[name="linea"]').value;
+      var mes = parseInt(row.querySelector('input[name="mes"]').value);
+      var anio = parseInt(row.querySelector('input[name="anio"]').value);
+      
+      // Verificar si ya existe un registro para esta combinación (solo para filas nuevas sin ID)
+      if (!row.hasAttribute('data-id')) {
+        let duplicado = false;
+        document.querySelectorAll('#kpiTableBody tr[data-id]').forEach(existingRow => {
+          const existingLinea = existingRow.querySelector('select[name="linea"]').value;
+          const existingMes = parseInt(existingRow.querySelector('input[name="mes"]').value);
+          const existingAnio = parseInt(existingRow.querySelector('input[name="anio"]').value);
+          
+          if (linea === existingLinea && mes === existingMes && anio === existingAnio) {
+            duplicado = true;
+          }
+        });
+        
+        if (duplicado) {
+          if (!confirm(`Ya existe un registro para la línea ${linea} en ${getMonthName(mes)} ${anio}. ¿Deseas continuar y sobrescribir el registro existente?`)) {
+            return; // Cancelar si el usuario no confirma
+          }
+        }
+      }
+      
+      // Llamar a la implementación original
+      window.originalSaveKpi(btn);
+    };
+  });
+
+  // Validar formato de tiempo (HH:MM:SS)
+function validateTimeFormat(input) {
+  // Actualizado para permitir formato HH:MM:SS
+  const timePattern = /^([0-9]{1,2}):([0-5][0-9])(?::([0-5][0-9]))?$/;
+  const value = input.value.trim();
+  
+  if (value === '') return true; // Permitir vacío
+  
+  if (!timePattern.test(value)) {
+    showToast("Error de formato", "El formato debe ser HH:MM o HH:MM:SS (ej: 5:30, 12:45:30)", "error");
+    input.focus();
+    return false;
+  }
+  
+  return true;
+}
+
+// Convertir formato de tiempo (HH:MM:SS) a horas decimales
+function timeToDecimal(timeStr) {
+  if (!timeStr || timeStr.trim() === '') return 0;
+  
+  const parts = timeStr.split(':');
+  const hours = parseInt(parts[0]);
+  const minutes = parts.length > 1 ? parseInt(parts[1]) : 0;
+  const seconds = parts.length > 2 ? parseInt(parts[2]) : 0;
+  
+  return hours + (minutes / 60) + (seconds / 3600);
+}
+
+// Convertir horas decimales a formato HH:MM:SS
+function decimalToTime(decimal) {
+  if (decimal === null || decimal === undefined || isNaN(decimal)) return '';
+  
+  const hours = Math.floor(decimal);
+  const minutesDecimal = (decimal - hours) * 60;
+  const minutes = Math.floor(minutesDecimal);
+  const seconds = Math.round((minutesDecimal - minutes) * 60);
+  
+  return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+</script>
+</body>
+</html>

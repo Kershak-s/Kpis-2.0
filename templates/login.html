@@ -1,90 +1,245 @@
-<!-- Plantilla de inicio de sesión para el sistema KPIs -->
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KPIs - Inicio de Sesión</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-        }
-
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-header {
-            background-color: #fff;
-            border-bottom: none;
-            text-align: center;
-            padding: 20px 0 0 0;
-        }
-
-        .card-header img {
-            max-width: 150px;
-            margin-bottom: 10px;
-        }
-
-        .form-control {
-            border-radius: 5px;
-            padding: 10px 15px;
-        }
-
-        .btn-primary {
-            border-radius: 5px;
-            padding: 10px;
-            font-weight: 600;
-            background-color: #0d6efd;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>PepsiCo KPI System - Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+    }
+    
+    body {
+      background: linear-gradient(135deg, var(--pepsico-dark-blue), var(--pepsico-blue));
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+    
+    .login-container {
+      width: 100%;
+      max-width: 450px;
+      padding: 15px;
+      margin: 40px 0;
+    }
+    
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .login-header {
+      background: var(--pepsico-blue);
+      padding: 25px;
+      position: relative;
+      text-align: center;
+    }
+    
+    .login-header img {
+      max-width: 180px;
+      margin-bottom: 15px;
+    }
+    
+    .login-header h3 {
+      color: white;
+      margin: 0;
+      font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+    
+    .login-header .subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 14px;
+      margin-top: 8px;
+    }
+    
+    .login-body {
+      padding: 30px 25px;
+    }
+    
+    .form-floating {
+      margin-bottom: 20px;
+    }
+    
+    .form-floating label {
+      color: #555;
+      font-weight: 500;
+    }
+    
+    .form-control:focus {
+      border-color: var(--pepsico-light-blue);
+      box-shadow: 0 0 0 0.25rem rgba(3, 87, 160, 0.25);
+    }
+    
+    /* Ajuste para los iconos en los inputs */
+    .input-group-text {
+      background-color: var(--pepsico-light-blue);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 46px; /* Ancho fijo para los iconos */
+    }
+    
+    .input-group-text i {
+      font-size: 18px; /* Tamaño más grande para los iconos */
+    }
+    
+    /* Ajuste para que el input tenga la misma altura que el icono */
+    .input-group .form-floating .form-control {
+      height: 100%;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    
+    .btn-primary {
+      background-color: var(--pepsico-blue);
+      border-color: var(--pepsico-blue);
+      font-weight: 600;
+      padding: 10px 0;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover, .btn-primary:focus {
+      background-color: var(--pepsico-dark-blue);
+      border-color: var(--pepsico-dark-blue);
+      transform: translateY(-2px);
+    }
+    
+    .login-footer {
+      font-size: 12px;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 25px;
+    }
+    
+    /* Decoración adicional */
+    .shape {
+      position: absolute;
+      z-index: -1;
+    }
+    
+    .shape-1 {
+      width: 120px;
+      height: 120px;
+      background-color: var(--pepsico-red);
+      border-radius: 50%;
+      top: -60px;
+      right: -60px;
+      opacity: 0.5;
+    }
+    
+    .shape-2 {
+      width: 80px;
+      height: 80px;
+      background-color: var(--sabritas-yellow);
+      border-radius: 50%;
+      bottom: -40px;
+      left: -40px;
+      opacity: 0.5;
+    }
+    
+    /* Efectos de foco en inputs */
+    .form-control:focus + label {
+      color: var(--pepsico-blue);
+    }
+    
+    /* Animación para alertas */
+    .alert {
+      animation: fadeIn 0.5s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Forma circular para logo */
+    .logo-circle {
+      width: 70px;
+      height: 70px;
+      background-color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .logo-circle i {
+      font-size: 32px;
+      color: var(--pepsico-blue);
+    }
+  </style>
 </head>
-
 <body>
-    <div class="container login-container">
-        <div class="card">
-            <div class="card-header">
-                <h3>Sistema de KPIs</h3>
-                <p class="text-muted">Iniciar Sesión</p>
-            </div>
-            <div class="card-body">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                {% for category, message in messages %}
-                <div class="alert alert-{{ category }}">{{ message }}</div>
-                {% endfor %}
-                {% endif %}
-                {% endwith %}
-
-                <form method="POST">
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Usuario</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Ingresar</button>
-                    </div>
-                </form>
-            </div>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      
+      <div class="login-header">
+        <div class="logo-circle" style="width: 80px; height: 80px; background-color: white; border-radius: 50%; padding: 5px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+          <img src="{{ url_for('static', filename='MOS.jpg') }}" alt="MOS Logo" style="max-width: 90%; max-height: 90%; object-fit: contain;">
         </div>
+        <h3>PepsiCo KPI System</h3>
+        <div class="subtitle">Sistema de Gestión de KPI para Plantas Sabritas</div>
+      </div>
+      
+      <div class="login-body">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+                <i class="fas fa-info-circle me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="/">
+          <div class="input-group mb-3">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <div class="form-floating flex-grow-1">
+              <input type="text" class="form-control" id="username" name="username" placeholder="Usuario" required>
+              <label for="username">Usuario</label>
+            </div>
+          </div>
+          
+          <div class="input-group mb-4">
+            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+            <div class="form-floating flex-grow-1">
+              <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+              <label for="password">Contraseña</label>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn btn-primary w-100 py-3 mt-3">
+            <i class="fas fa-sign-in-alt me-2"></i> Iniciar Sesión
+          </button>
+        </form>
+      </div>
     </div>
-
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <div class="login-footer">
+      <p>© 2025 PepsiCo Inc. Sistema de Gestión de KPI para Plantas</p>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

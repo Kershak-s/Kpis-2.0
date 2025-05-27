@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Consulta de Datos por Usuario</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-4">
+    <h2 class="text-center">Consulta de Datos por Usuario</h2>
+    <!-- Formulario para seleccionar el usuario -->
+    <form method="POST" class="mb-4">
+      <div class="input-group">
+        <select name="user_id" class="form-select" required>
+          <option value="">Seleccione un usuario</option>
+          {% for user in users %}
+            <option value="{{ user.id }}" {% if user_id and user.id == user_id|int %}selected{% endif %}>
+              {{ user.username }}
+            </option>
+          {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-primary">Consultar</button>
+      </div>
+    </form>
+
+    {% if user_id %}
+      <h4>Datos de KPI del usuario seleccionado:</h4>
+      <div id="kpiData"></div>
+    {% endif %}
+    
+    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Volver al Menú</a>
+  </div>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  {% if user_id %}
+  <script>
+    // Al cargar la página, si se indicó user_id, se consulta la API de KPI con ese parámetro
+    fetch("{{ url_for('get_kpis') }}?user_id={{ user_id }}")
+      .then(response => response.json())
+      .then(data => {
+        var container = document.getElementById('kpiData');
+        if (Object.keys(data).length === 0) {
+          container.innerHTML = "<p>No se encontraron KPI para este usuario.</p>";
+        } else {
+          var html = "";
+          for (var anio in data) {
+            html += "<h5>Año: " + anio + "</h5>";
+            html += "<table class='table table-bordered table-sm'>";
+            html += "<thead><tr><th>Mes</th><th>Línea</th><th>Eficiencia Pesadora</th><th>Eficiencia Empaque</th><th>Eficiencia DME</th><th>Sobre Grameaje</th><th>Eficiencia GUACP</th><th>MTBF</th><th>MTTR</th><th>Eficiencia en Espera</th></tr></thead><tbody>";
+            for (var mes in data[anio]) {
+              var r = data[anio][mes];
+              html += "<tr>";
+              html += "<td>" + mes + "</td>";
+              html += "<td>" + r.linea + "</td>";
+              html += "<td>" + r.eficiencia_pesadora + "</td>";
+              html += "<td>" + r.eficiencia_empaque + "</td>";
+              html += "<td>" + r.eficiencia_dme + "</td>";
+              html += "<td>" + r.sobre_gramaje + "</td>";
+              html += "<td>" + r.eficiencia_guacp + "</td>";
+              html += "<td>" + r.mtbf + "</td>";
+              html += "<td>" + r.mttr + "</td>";
+              html += "<td>" + r.eficiencia_espera_producto + "</td>";
+              html += "</tr>";
+            }
+            html += "</tbody></table>";
+          }
+          container.innerHTML = html;
+        }
+      })
+      .catch(error => {
+        console.error('Error al consultar KPI:', error);
+        document.getElementById('kpiData').innerHTML = "<p>Error al obtener datos.</p>";
+      });
+  </script>
+  {% endif %}
+</body>
+</html>

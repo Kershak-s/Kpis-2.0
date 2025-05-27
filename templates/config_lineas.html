@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Configuración de Líneas de Equipos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap y Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    body { background: #f0f2f5; font-family: Arial, sans-serif; }
+    .table thead { background: #007bff; color: white; }
+    .action-btn { border: none; background: none; cursor: pointer; padding: 4px; font-size: 1rem; margin-right: 4px; }
+    .action-btn.green { color: green; }
+    .action-btn.red { color: red; }
+    .action-btn.edit { color: #007bff; }
+  </style>
+</head>
+<body>
+  <div class="container mt-4">
+    <h2 class="text-center mb-4">Configuración de Líneas de Equipos</h2>
+    <div class="text-center mb-3">
+      <button id="addLineaBtn" class="btn btn-primary">Agregar Línea</button>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-bordered" id="lineaTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre de Línea</th>
+            <th>Acciones</th>
+            <th>Equipos</th>
+          </tr>
+        </thead>
+        <tbody id="lineaTableBody">
+          {% for linea in lineas %}
+          <tr data-id="{{ linea.id }}">
+            <td>{{ linea.id }}</td>
+            <td><input type="text" class="form-control" name="nombre" value="{{ linea.nombre }}" disabled></td>
+            <td>
+              <button class="action-btn green" onclick="saveLinea(this)" title="Guardar"><i class="fas fa-check"></i></button>
+              <button class="action-btn red" onclick="deleteLinea(this)" title="Borrar"><i class="fas fa-times"></i></button>
+              <button class="action-btn edit" onclick="editLinea(this)" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+            </td>
+            <td>
+              <a href="{{ url_for('config_equipos', linea_id=linea.id) }}" class="btn btn-info btn-sm">Ver Equipos</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div class="text-center mt-3">
+      <a href="{{ url_for('configuracion') }}" class="btn btn-secondary">Volver a Configuración</a>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('addLineaBtn').addEventListener('click', function() {
+      var tbody = document.getElementById('lineaTableBody');
+      var newRow = document.createElement('tr');
+      newRow.innerHTML = `
+        <td>Nueva</td>
+        <td><input type="text" class="form-control" name="nombre" value=""></td>
+        <td>
+          <button class="action-btn green" onclick="saveLinea(this)" title="Guardar"><i class="fas fa-check"></i></button>
+          <button class="action-btn red" onclick="deleteLinea(this)" title="Borrar"><i class="fas fa-times"></i></button>
+          <button class="action-btn edit" onclick="editLinea(this)" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+        </td>
+        <td></td>
+      `;
+      tbody.appendChild(newRow);
+    });
+    
+    function saveLinea(btn) {
+      var row = btn.parentNode.parentNode;
+      var nombre = row.querySelector('input[name="nombre"]').value;
+      var id = row.getAttribute('data-id');
+      if (id && id !== "Nueva") {
+        var urlTemplate = "{{ url_for('actualizar_linea_config', linea_id=0) }}";
+        var updateUrl = urlTemplate.replace('/0', '/' + id);
+        fetch(updateUrl, {
+          method: 'PUT',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({nombre: nombre})
+        })
+        .then(response => response.json())
+        .then(result => {
+          if(result.success) {
+            alert('Actualización exitosa');
+            row.querySelectorAll('input').forEach(input => input.disabled = true);
+          } else {
+            alert('Error al actualizar');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error en la solicitud');
+        });
+      } else {
+        fetch("{{ url_for('guardar_linea_config') }}", {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({nombre: nombre})
+        })
+        .then(response => response.json())
+        .then(result => {
+          if(result.success) {
+            alert('Guardado exitoso');
+            row.setAttribute('data-id', result.id);
+            row.querySelector('td').innerText = result.id;
+            row.querySelectorAll('input').forEach(input => input.disabled = true);
+          } else {
+            alert('Error al guardar');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error en la solicitud');
+        });
+      }
+    }
+    
+    function deleteLinea(btn) {
+      if(confirm("⚠️ ¿Estás seguro de eliminar esta línea?")) {
+        var row = btn.parentNode.parentNode;
+        var id = row.getAttribute('data-id');
+        if(id && id !== "Nueva") {
+          var urlTemplate = "{{ url_for('borrar_linea_config', linea_id=0) }}";
+          var deleteUrl = urlTemplate.replace('/0', '/' + id);
+          fetch(deleteUrl, { method: 'DELETE' })
+          .then(response => response.json())
+          .then(result => {
+            if(result.success) {
+              row.remove();
+            } else {
+              alert('Error al borrar');
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            alert('Error en la solicitud');
+          });
+        } else {
+          row.remove();
+        }
+      }
+    }
+    
+    function editLinea(btn) {
+      var row = btn.parentNode.parentNode;
+      row.querySelector('input[name="nombre"]').disabled = false;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome para iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+      --success-green: #28a745;
+      --danger-red: #dc3545;
+      --warning-yellow: #ffc107;
+    }
+    
+    body { 
+      background-color: var(--light-gray); 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+    
+    /* Header y Navegación */
+    .admin-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      color: white;
+      padding: 15px 0;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    
+    .admin-header h2 {
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    .admin-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 30px;
+      border: none;
+    }
+    
+    /* Personalización de Tabs */
+    .nav-tabs {
+      border-bottom: none;
+      padding: 0 15px;
+      background: #f8f9fa;
+      border-radius: 8px 8px 0 0;
+    }
+    
+    .nav-tabs .nav-link {
+      margin-bottom: 0;
+      padding: 15px 20px;
+      border: none;
+      color: var(--dark-gray);
+      font-weight: 600;
+      transition: all 0.3s ease;
+      border-radius: 0;
+    }
+    
+    .nav-tabs .nav-link:hover {
+      color: var(--pepsico-blue);
+      background-color: #fff;
+    }
+    
+    .nav-tabs .nav-link.active {
+      color: var(--pepsico-blue);
+      background-color: white;
+      border-top: 3px solid var(--pepsico-blue);
+      border-left: 1px solid #dee2e6;
+      border-right: 1px solid #dee2e6;
+      border-bottom: none;
+    }
+    
+    .nav-tabs .nav-link i {
+      margin-right: 8px;
+    }
+    
+    .tab-content {
+      padding: 20px;
+    }
+    
+    /* Tablas */
+    .table {
+      margin-bottom: 0;
+    }
+    
+    .table thead th {
+      background-color: var(--pepsico-blue);
+      color: white;
+      font-weight: 600;
+      border: none;
+      padding: 12px 15px;
+    }
+    
+    .table thead th:first-child {
+      border-top-left-radius: 6px;
+    }
+    
+    .table thead th:last-child {
+      border-top-right-radius: 6px;
+    }
+    
+    .table tbody tr:nth-of-type(odd) {
+      background-color: rgba(3, 87, 160, 0.03);
+    }
+    
+    .table tbody tr:hover {
+      background-color: rgba(3, 87, 160, 0.06);
+    }
+    
+    .table td {
+      padding: 12px 15px;
+      vertical-align: middle;
+    }
+    
+    /* Botones */
+    .btn-primary {
+      background-color: var(--pepsico-blue);
+      border-color: var(--pepsico-blue);
+      box-shadow: 0 2px 4px rgba(3, 87, 160, 0.2);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--pepsico-dark-blue);
+      border-color: var(--pepsico-dark-blue);
+    }
+    
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+      box-shadow: 0 2px 4px rgba(40, 167, 69, 0.2);
+    }
+    
+    .btn-success:hover {
+      background-color: #218838;
+      border-color: #1e7e34;
+    }
+    
+    .btn-danger {
+      background-color: var(--pepsico-red);
+      border-color: var(--pepsico-red);
+      box-shadow: 0 2px 4px rgba(224, 0, 52, 0.2);
+    }
+    
+    .btn-danger:hover {
+      background-color: #d6002e;
+      border-color: #c7002b;
+    }
+    
+    .btn-warning {
+      background-color: var(--sabritas-yellow);
+      border-color: var(--sabritas-yellow);
+      color: #212529;
+      box-shadow: 0 2px 4px rgba(255, 209, 1, 0.2);
+    }
+    
+    .btn-warning:hover {
+      background-color: #e6bc00;
+      border-color: #d9b100;
+      color: #212529;
+    }
+    
+    .btn-info {
+      background-color: var(--pepsico-light-blue);
+      border-color: var(--pepsico-light-blue);
+      color: white;
+      box-shadow: 0 2px 4px rgba(0, 133, 202, 0.2);
+    }
+    
+    .btn-info:hover {
+      background-color: #0078b6;
+      border-color: #0070ab;
+      color: white;
+    }
+    
+    /* Badges para estado */
+    .badge {
+      padding: 6px 10px;
+      font-weight: 500;
+      border-radius: 4px;
+    }
+    
+    .badge-admin {
+      background-color: var(--pepsico-blue);
+      color: white;
+    }
+    
+    .badge-user {
+      background-color: var(--medium-gray);
+      color: var(--dark-gray);
+    }
+    
+    /* Layout específico para detalles */
+    .layout-details {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    /* Utilitarios */
+    .card-section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eaeaea;
+    }
+    
+    /* Animaciones para alertas */
+    .alert {
+      animation: fadeIn 0.5s;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-tabs .nav-link {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+      }
+      
+      .admin-header h2 {
+        font-size: 1.5rem;
+      }
+      
+      .btn {
+        padding: 0.375rem 0.5rem;
+      }
+    }
+
+    /* Estilos para el panel de status de carga */
+    .status-panel {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .status-panel-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 15px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eaeaea;
+      display: flex;
+      align-items: center;
+    }
+
+    .status-panel-title i {
+      margin-right: 8px;
+    }
+
+    .plant-status-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .plant-status-item {
+      padding: 8px 10px;
+      margin-bottom: 8px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+    }
+
+    .plant-status-item:hover {
+      background-color: var(--light-gray);
+      transform: translateX(3px);
+    }
+
+    .plant-status-item .plant-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .plant-status-item .plant-name {
+      font-weight: 500;
+    }
+
+    .plant-status-item .plant-bu {
+      font-size: 0.75rem;
+      color: var(--dark-gray);
+    }
+
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .status-indicator.loaded {
+      background-color: var(--success-green);
+      box-shadow: 0 0 6px var(--success-green);
+    }
+
+    .status-indicator.not-loaded {
+      background-color: var(--danger-red);
+      box-shadow: 0 0 6px var(--danger-red);
+    }
+
+    .status-indicator.partial {
+      background-color: var(--warning-yellow);
+      box-shadow: 0 0 6px var(--warning-yellow);
+    }
+
+    /* Estilos para filtros de mes/año en KPIs */
+    .kpi-filters {
+      background-color: var(--light-gray);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .kpi-filters label {
+      font-weight: 500;
+      margin-right: 5px;
+      white-space: nowrap;
+    }
+
+    .kpi-filters .form-select {
+      width: auto;
+      min-width: 120px;
+      display: inline-block;
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Estilos para métricas en cards */
+    .kpi-metrics-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .metric-card {
+      flex: 1;
+      min-width: 200px;
+      background-color: white;
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .metric-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .metric-card .metric-title {
+      font-size: 0.9rem;
+      color: var(--dark-gray);
+      margin-bottom: 10px;
+    }
+
+    .metric-card .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--pepsico-blue);
+    }
+
+    .metric-card .metric-trend {
+      font-size: 0.8rem;
+      margin-top: 5px;
+    }
+
+    .metric-trend.up {
+      color: var(--success-green);
+    }
+
+    .metric-trend.down {
+      color: var(--danger-red);
+    }
+
+    /* Status summary */
+    .status-summary {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding: 10px 0;
+      border-bottom: 1px solid #eaeaea;
+    }
+
+    .summary-item {
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .summary-value {
+      font-size: 1.5rem;
+      font-weight: 600;
+      display: block;
+    }
+
+    .summary-label {
+      font-size: 0.8rem;
+      color: var(--dark-gray);
+    }
+
+    .summary-value.green {
+      color: var(--success-green);
+    }
+
+    .summary-value.red {
+      color: var(--danger-red);
+    }
+
+    .summary-value.yellow {
+      color: var(--warning-yellow);
+    }
+
+    .summary-value.blue {
+      color: var(--pepsico-blue);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h2><i class="fas fa-cogs me-2"></i> Panel de Administración</h2>
+        </div>
+        <div class="col-md-6 text-md-end">
+          <a href="{{ url_for('logout') }}" class="btn btn-outline-light">
+            <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Mensajes Flash -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show mb-4" role="alert">
+            <i class="fas fa-info-circle me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    
+    <!-- Contenido principal en dos columnas -->
+    <div class="row">
+      <!-- Panel lateral izquierdo con status de carga -->
+      <div class="col-md-3">
+        <div class="status-panel">
+          <div class="status-panel-title">
+            <i class="fas fa-tasks"></i> Status de Carga
+          </div>
+          
+          <div class="status-summary">
+            <div class="summary-item">
+              <span class="summary-value blue" id="totalPlants">{{ plants_status.total }}</span>
+              <span class="summary-label">Total</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-value green" id="loadedPlants">{{ plants_status.loaded }}</span>
+              <span class="summary-label">Cargadas</span>
+            </div>
+            <div class="summary-item">
+              <span class="summary-value red" id="notLoadedPlants">{{ plants_status.not_loaded }}</span>
+              <span class="summary-label">Pendientes</span>
+            </div>
+          </div>
+          
+          <ul class="plant-status-list">
+            {% for plant in plants_status.details %}
+            <li class="plant-status-item">
+              <div class="d-flex align-items-center">
+                <span class="status-indicator {% if plant.loaded %}loaded{% else %}not-loaded{% endif %}"></span>
+                <div class="plant-info">
+                  <span class="plant-name">{{ plant.plant }}</span>
+                  <span class="plant-bu">{{ plant.bu }}</span>
+                </div>
+              </div>
+              <span class="badge {% if plant.loaded %}bg-success{% else %}bg-danger{% endif %}">
+                {% if plant.loaded %}Cargado{% else %}Pendiente{% endif %}
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Contenido principal derecho -->
+      <div class="col-md-9">
+        <!-- Tarjeta Principal-->
+        <div class="admin-card">
+          <!-- Nav Tabs -->
+          <ul class="nav nav-tabs" id="adminTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="usuarios-tab" data-bs-toggle="tab" 
+                      data-bs-target="#usuarios" type="button" role="tab" 
+                      aria-controls="usuarios" aria-selected="true">
+                <i class="fas fa-users"></i> Usuarios
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="lay-out-tab" data-bs-toggle="tab" 
+                      data-bs-target="#lay-out" type="button" role="tab" 
+                      aria-controls="lay-out" aria-selected="false">
+                <i class="fas fa-industry"></i> Consulta de Lay Out
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="kpis-tab" data-bs-toggle="tab" 
+                      data-bs-target="#kpis" type="button" role="tab" 
+                      aria-controls="kpis" aria-selected="false">
+                <i class="fas fa-chart-line"></i> KPIs
+              </button>
+            </li>
+          </ul>
+          
+          <!-- Tab Panes -->
+          <div class="tab-content" id="adminTabContent">
+            
+            <!-- 1. Usuarios -->
+            <div class="tab-pane fade show active" id="usuarios" role="tabpanel" aria-labelledby="usuarios-tab">
+              <div class="card-section-title">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span>Administración de Usuarios</span>
+                  <a href="{{ url_for('register') }}" class="btn btn-success">
+                    <i class="fas fa-user-plus me-1"></i> Registrar Nuevo
+                  </a>
+                </div>
+              </div>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Usuario</th>
+                      <th>BU</th>
+                      <th>Planta</th>
+                      <th>Rol</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for u in users %}
+                    <tr>
+                      <td>{{ u.id }}</td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-user-circle fs-4 me-2 text-secondary"></i>
+                          <span>{{ u.username }}</span>
+                        </div>
+                      </td>
+                      <td>{{ u.bu or 'No asignado' }}</td>
+                      <td>{{ u.plant or 'No asignado' }}</td>
+                      <td>
+                        {% if u.is_admin %}
+                          <span class="badge bg-primary">Administrador</span>
+                        {% else %}
+                          <span class="badge bg-secondary">Usuario</span>
+                        {% endif %}
+                      </td>
+                      <td>
+                        <a href="{{ url_for('edit_user', user_id=u.id) }}" class="btn btn-warning btn-sm">
+                          <i class="fas fa-edit me-1"></i> Editar
+                        </a>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            <!-- 2. Lay Out -->
+            <div class="tab-pane fade" id="lay-out" role="tabpanel" aria-labelledby="lay-out-tab">
+              <div class="card-section-title">Consulta de Lay Out por Planta</div>
+              
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>BU</th>
+                      <th>Planta</th>
+                      <th>Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for item in lay_outs %}
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <i class="fas fa-building me-2 text-secondary"></i>
+                          <span>{{ item.bu }}</span>
+                        </div>
+                      </td>
+                      <td>{{ item.plant }}</td>
+                      <td>
+                        <button class="btn btn-info btn-sm" onclick="mostrarLayOut('{{ item.bu }}', '{{ item.plant }}')">
+                          <i class="fas fa-info-circle me-1"></i> Ver Información
+                        </button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              
+              <!-- Div para detalles de Lay Out -->
+              <div id="layOutDetalle" class="mt-4"></div>
+            </div>
+            
+            <!-- 3. KPIS -->
+            <div class="tab-pane fade" id="kpis" role="tabpanel" aria-labelledby="kpis-tab">
+              <div class="card-section-title">
+                <div class="d-flex justify-content-between align-items-center">
+                  <span>Monitoreo de KPIs por Planta</span>
+                </div>
+              </div>
+              
+              <!-- Filtros para KPIs -->
+              <div class="kpi-filters">
+                <div class="filter-group">
+                  <label for="kpiMonth">Mes:</label>
+                  <select id="kpiMonth" class="form-select">
+                    {% for num, mes in [(1,"Enero"),(2,"Febrero"),(3,"Marzo"),(4,"Abril"),(5,"Mayo"),(6,"Junio"),(7,"Julio"),(8,"Agosto"),(9,"Septiembre"),(10,"Octubre"),(11,"Noviembre"),(12,"Diciembre")] %}
+                      <option value="{{ num }}" {% if current_month == num %}selected{% endif %}>{{ mes }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label for="kpiYear">Año:</label>
+                  <select id="kpiYear" class="form-select">
+                    {% for year in range(current_year-2, current_year+1) %}
+                      <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+                <button id="filterKpiBtn" class="btn btn-primary btn-sm">
+                  <i class="fas fa-filter me-1"></i> Filtrar
+                </button>
+              </div>
+              
+              <!-- Métricas KPI resumen -->
+              <div class="kpi-metrics-row">
+                <div class="metric-card">
+                  <div class="metric-title">Eficiencia Promedio Pesadora</div>
+                  <div class="metric-value">{{ "%.1f"|format(kpi_metrics.avg_pesadora) }}%</div>
+                  <div class="metric-trend {% if kpi_metrics.trend_pesadora >= 0 %}up{% else %}down{% endif %}">
+                    <i class="fas {% if kpi_metrics.trend_pesadora >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+                    {{ "%.1f"|format(kpi_metrics.trend_pesadora|abs) }}%
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-title">Eficiencia Promedio Empaque</div>
+                  <div class="metric-value">{{ "%.1f"|format(kpi_metrics.avg_empaque) }}%</div>
+                  <div class="metric-trend {% if kpi_metrics.trend_empaque >= 0 %}up{% else %}down{% endif %}">
+                    <i class="fas {% if kpi_metrics.trend_empaque >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+                    {{ "%.1f"|format(kpi_metrics.trend_empaque|abs) }}%
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-title">Eficiencia Promedio DME</div>
+                  <div class="metric-value">{{ "%.1f"|format(kpi_metrics.avg_dme) }}%</div>
+                  <div class="metric-trend {% if kpi_metrics.trend_dme >= 0 %}up{% else %}down{% endif %}">
+                    <i class="fas {% if kpi_metrics.trend_dme >= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+                    {{ "%.1f"|format(kpi_metrics.trend_dme|abs) }}%
+                  </div>
+                </div>
+                <div class="metric-card">
+                  <div class="metric-title">Sobre Grameaje Promedio</div>
+                  <div class="metric-value">{{ "%.1f"|format(kpi_metrics.avg_gramaje) }}%</div>
+                  <div class="metric-trend {% if kpi_metrics.trend_gramaje <= 0 %}up{% else %}down{% endif %}">
+                    <i class="fas {% if kpi_metrics.trend_gramaje <= 0 %}fa-arrow-up{% else %}fa-arrow-down{% endif %}"></i>
+                    {{ "%.1f"|format(kpi_metrics.trend_gramaje|abs) }}%
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Tabla de KPIs por planta -->
+              <div class="table-responsive">
+                <table class="table table-hover">
+                  <thead>
+                    <tr>
+                      <th>Planta</th>
+                      <th>BU</th>
+                      <th>Usuario</th>
+                      <th>Fecha Carga</th>
+                      <th>Ef. Pesadora</th>
+                      <th>Ef. Empaque</th>
+                      <th>Ef. DME</th>
+                      <th>Detalle</th>
+                    </tr>
+                  </thead>
+                  <tbody id="kpiTableBody">
+                    {% for k in kpis_by_plant %}
+                    <tr>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="status-indicator {% if k.has_data %}loaded{% else %}not-loaded{% endif %}"></span>
+                          <span>{{ k.plant }}</span>
+                        </div>
+                      </td>
+                      <td>{{ k.bu }}</td>
+                      <td>{{ k.username }}</td>
+                      <td>
+                        {% if k.has_data %}
+                          {{ k.fecha_carga }}
+                        {% else %}
+                          <span class="badge bg-danger">No Cargado</span>
+                        {% endif %}
+                      </td>
+                      <td class="text-center">
+                        {% if k.has_data %}
+                          <span class="badge {% if k.eficiencia_pesadora >= 85 %}bg-success{% elif k.eficiencia_pesadora >= 70 %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ k.eficiencia_pesadora }}%
+                          </span>
+                        {% else %}
+                          -
+                        {% endif %}
+                      </td>
+                      <td class="text-center">
+                        {% if k.has_data %}
+                          <span class="badge {% if k.eficiencia_empaque >= 85 %}bg-success{% elif k.eficiencia_empaque >= 70 %}bg-warning{% else %}bg-danger{% endif %}">
+                            {{ k.eficiencia_empaque }}%
+                          </span>
+                        {% else %}
+                          -
+                        {% endif %}
+                      </td>
+                      <td class="text-center">
+                        {% if k.has_data %}
+                          
+                            <span class="badge {% if k.eficiencia_dme >= 85 %}bg-success{% elif k.eficiencia_dme >= 70 %}bg-warning{% else %}bg-danger{% endif %}">
+                              {{ k.eficiencia_dme }}%
+                            </span>
+                            {% else %}
+                              -
+                            {% endif %}
+                            </td>
+                            <td>
+                              {% if k.has_data %}
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#detalle-{{ loop.index }}" 
+                                        aria-expanded="false">
+                                  <i class="fas fa-eye me-1"></i> Ver
+                                </button>
+                              {% else %}
+                                <button class="btn btn-sm btn-outline-secondary" disabled>
+                                  <i class="fas fa-eye-slash me-1"></i> N/A
+                                </button>
+                              {% endif %}
+                            </td>
+                            </tr>
+                            {% if k.has_data %}
+                            <tr class="collapse" id="detalle-{{ loop.index }}">
+                              <td colspan="8" class="p-0">
+                                <div class="p-3 bg-light">
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <table class="table table-sm">
+                                        <tr>
+                                          <th>Línea</th>
+                                          <td>{{ k.linea }}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Sobre Grameaje</th>
+                                          <td>{{ k.sobre_gramaje }}%</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Eficiencia GUACP</th>
+                                          <td>{{ k.eficiencia_guacp }}%</td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <table class="table table-sm">
+                                        <tr>
+                                          <th>MTBF</th>
+                                          <td>{{ k.mtbf }}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>MTTR</th>
+                                          <td>{{ k.mttr }}</td>
+                                        </tr>
+                                        <tr>
+                                          <th>Eficiencia en Espera</th>
+                                          <td>{{ k.eficiencia_espera_producto }}%</td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                            </tbody>
+                            </table>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            </div>
+                            
+                            <!-- Bootstrap JS -->
+                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                            <script>
+                              // Función para consultar datos de Lay Out de un BU y Planta en específico
+                              function mostrarLayOut(bu, plant) {
+                                // Mostrar indicador de carga
+                                document.getElementById('layOutDetalle').innerHTML = `
+                                  <div class="d-flex justify-content-center">
+                                    <div class="spinner-border text-primary" role="status">
+                                      <span class="visually-hidden">Cargando...</span>
+                                    </div>
+                                  </div>
+                                `;
+                                
+                                // Codificar correctamente los parámetros
+                                var url = "{{ url_for('get_lay_out_info') }}";
+                                url += "?bu=" + encodeURIComponent(bu) + "&plant=" + encodeURIComponent(plant);
+                                
+                                fetch(url)
+                                  .then(response => {
+                                    if (!response.ok) {
+                                      return response.text().then(text => {
+                                        console.error("Respuesta del servidor (error):", text);
+                                        throw new Error('Error del servidor: ' + response.status);
+                                      });
+                                    }
+                                    return response.json();
+                                  })
+                                  .then(data => {
+                                    var container = document.getElementById('layOutDetalle');
+                                    if(data.error){
+                                      container.innerHTML = `
+                                        <div class="alert alert-danger">
+                                          <i class="fas fa-exclamation-triangle me-2"></i> ${data.error}
+                                        </div>
+                                      `;
+                                      return;
+                                    }
+                                    if(!data || data.length === 0){
+                                      container.innerHTML = `
+                                        <div class="alert alert-info">
+                                          <i class="fas fa-info-circle me-2"></i> No se encontraron registros para BU: ${bu} y Planta: ${plant}
+                                        </div>
+                                      `;
+                                      return;
+                                    }
+                                    
+                                    // Calcular estadísticas para el resumen
+                                    const totalEquipos = data.length;
+                                    const equiposAutomaticos = data.filter(item => item.categoria === 'Automatico').length;
+                                    const equiposManuales = data.filter(item => item.categoria === 'Manual').length;
+                                    
+                                    let html = `
+                                      <div class="layout-details">
+                                        <div class="card-section-title">
+                                          <i class="fas fa-industry me-2"></i> Registros para BU: ${bu} - Planta: ${plant}
+                                        </div>
+                                        
+                                        <!-- Resumen Estadístico -->
+                                        <div class="card mb-3">
+                                          <div class="card-body bg-light">
+                                            <h5 class="card-title"><i class="fas fa-chart-pie me-2"></i>Resumen</h5>
+                                            <div class="row text-center">
+                                              <div class="col-md-4">
+                                                <div class="mb-2">
+                                                  <span class="fs-1 fw-bold text-primary">${totalEquipos}</span>
+                                                </div>
+                                                <div>Total de Equipos</div>
+                                              </div>
+                                              <div class="col-md-4">
+                                                <div class="mb-2">
+                                                  <span class="fs-1 fw-bold text-success">${equiposAutomaticos}</span>
+                                                </div>
+                                                <div>Equipos Automáticos</div>
+                                              </div>
+                                              <div class="col-md-4">
+                                                <div class="mb-2">
+                                                  <span class="fs-1 fw-bold text-warning">${equiposManuales}</span>
+                                                </div>
+                                                <div>Equipos Manuales</div>
+                                              </div>
+                                            </div>
+                                            <!-- Barra de progreso para visualizar proporción -->
+                                            <div class="progress mt-3" style="height: 25px;">
+                                              <div class="progress-bar bg-success" role="progressbar" 
+                                                   style="width: ${(equiposAutomaticos/totalEquipos)*100}%" 
+                                                   aria-valuenow="${equiposAutomaticos}" aria-valuemin="0" aria-valuemax="${totalEquipos}">
+                                                ${Math.round((equiposAutomaticos/totalEquipos)*100)}% Automáticos
+                                              </div>
+                                              <div class="progress-bar bg-warning" role="progressbar" 
+                                                   style="width: ${(equiposManuales/totalEquipos)*100}%" 
+                                                   aria-valuenow="${equiposManuales}" aria-valuemin="0" aria-valuemax="${totalEquipos}">
+                                                ${Math.round((equiposManuales/totalEquipos)*100)}% Manuales
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        
+                                        <div class="table-responsive">
+                                          <table class="table table-hover">
+                                            <thead>
+                                              <tr>
+                                                <th>Usuario</th>
+                                                <th>Categoría</th>
+                                                <th>Línea</th>
+                                                <th>Marca</th>
+                                                <th>Modelo</th>
+                                                <th>Pesadora</th>
+                                                <th>Empacadora</th>
+                                                <th>HIGH SPEED</th>
+                                                <th>*****</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                    `;
+                                    
+                                    data.forEach(function(item) {
+                                      html += `
+                                        <tr>
+                                          <td>${item.user || "N/A"}</td>
+                                          <td>
+                                            <span class="badge ${item.categoria === 'Automatico' ? 'bg-success' : 'bg-warning text-dark'}">
+                                              ${item.categoria || "N/A"}
+                                            </span>
+                                          </td>
+                                          <td>${item.linea || "N/A"}</td>
+                                          <td>${item.marca || "N/A"}</td>
+                                          <td>${item.modelo || "N/A"}</td>
+                                          <td>${item.pesadora || "N/A"}</td>
+                                          <td>${item.empacadora || "N/A"}</td>
+                                          <td>${item.high_speed || "N/A"}</td>
+                                          <td>${item.asteriscos || "N/A"}</td>
+                                        </tr>
+                                      `;
+                                    });
+                                    
+                                    html += `
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </div>
+                                    `;
+                                    
+                                    container.innerHTML = html;
+                                  })
+                                  .catch(error => {
+                                    console.error('Error:', error);
+                                    document.getElementById('layOutDetalle').innerHTML = `
+                                      <div class="alert alert-danger">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Error al obtener datos. Detalles: ${error.message}
+                                      </div>
+                                    `;
+                                  });
+                              }
+                            
+                              // Filtrar KPIs por mes y año
+                              document.getElementById('filterKpiBtn').addEventListener('click', function() {
+                                const month = document.getElementById('kpiMonth').value;
+                                const year = document.getElementById('kpiYear').value;
+                                
+                                // Redirigir a la misma página con los parámetros de filtro
+                                window.location.href = "{{ url_for('admin') }}?month=" + month + "&year=" + year + "#kpis";
+                              });
+                            
+                              // Al cargar la página, activar la pestaña correcta si viene de un enlace con hash
+                              document.addEventListener('DOMContentLoaded', function() {
+                                if (window.location.hash) {
+                                  const tabId = window.location.hash.substring(1); // Quitar el # del inicio
+                                  const tab = document.getElementById(tabId + '-tab');
+                                  if (tab) {
+                                    const bsTab = new bootstrap.Tab(tab);
+                                    bsTab.show();
+                                  }
+                                }
+                              });
+                            </script>

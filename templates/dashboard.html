@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - PepsiCo KPI System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap CSS y Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --pepsico-blue: #0357a0;
+      --pepsico-red: #e00034;
+      --pepsico-light-blue: #0085ca;
+      --pepsico-dark-blue: #004681;
+      --sabritas-yellow: #ffd101;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #495057;
+    }
+    
+    body { 
+      background-color: #f0f2f5; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Header y Navegación */
+    .main-header {
+      background: linear-gradient(90deg, var(--pepsico-blue), var(--pepsico-dark-blue));
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      padding: 12px 0;
+    }
+    
+    .navbar-brand {
+      font-weight: 600;
+      color: white !important;
+      display: flex;
+      align-items: center;
+    }
+    
+    .navbar-brand .logo-circle {
+      background-color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    
+    .navbar-brand .logo-circle i {
+      color: var(--pepsico-blue);
+      font-size: 18px;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link {
+      color: rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+    }
+    
+    .navbar-dark .navbar-nav .nav-link:hover,
+    .navbar-dark .navbar-nav .nav-link:focus {
+      color: white;
+      transform: translateY(-2px);
+    }
+    
+    .navbar-dark .navbar-nav .nav-link.active {
+      color: white;
+      font-weight: 500;
+    }
+    
+    /* Dashboard Container */
+    .dashboard-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    
+    /* Welcome Section */
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      padding: 20px;
+    }
+    
+    .welcome-title {
+      font-size: 2.2rem;
+      font-weight: 600;
+      color: var(--pepsico-dark-blue);
+      margin-bottom: 10px;
+    }
+    
+    .welcome-subtitle {
+      color: var(--dark-gray);
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Menu Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    .menu-card {
+      background-color: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      position: relative;
+      height: 100%;
+    }
+    
+    .menu-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.12);
+    }
+    
+    .menu-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--pepsico-blue);
+      z-index: 1;
+    }
+    
+    .menu-card:nth-child(2)::before {
+      background: var(--pepsico-red);
+    }
+    
+    .menu-card:nth-child(3)::before {
+      background: var(--sabritas-yellow);
+    }
+    
+    .menu-card:nth-child(4)::before {
+      background: #28a745;
+    }
+    
+    .menu-card:nth-child(5)::before {
+      background: var(--pepsico-light-blue);
+    }
+    
+    .menu-card a {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--dark-gray);
+      padding: 30px 15px;
+      height: 100%;
+    }
+    
+    .menu-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background-color: rgba(3, 87, 160, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      transition: all 0.3s ease;
+    }
+    
+    .menu-card:nth-child(2) .menu-icon {
+      background-color: rgba(224, 0, 52, 0.1);
+    }
+    
+    .menu-card:nth-child(3) .menu-icon {
+      background-color: rgba(255, 209, 1, 0.1);
+    }
+    
+    .menu-card:nth-child(4) .menu-icon {
+      background-color: rgba(40, 167, 69, 0.1);
+    }
+    
+    .menu-card:nth-child(5) .menu-icon {
+      background-color: rgba(0, 133, 202, 0.1);
+    }
+    
+    .menu-icon i {
+      font-size: 32px;
+      color: var(--pepsico-blue);
+      transition: all 0.3s ease;
+    }
+    
+    .menu-card:nth-child(2) .menu-icon i {
+      color: var(--pepsico-red);
+    }
+    
+    .menu-card:nth-child(3) .menu-icon i {
+      color: #e0b800;
+    }
+    
+    .menu-card:nth-child(4) .menu-icon i {
+      color: #28a745;
+    }
+    
+    .menu-card:nth-child(5) .menu-icon i {
+      color: var(--pepsico-light-blue);
+    }
+    
+    .menu-card:hover .menu-icon {
+      transform: scale(1.1);
+    }
+    
+    .menu-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .menu-desc {
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    
+    /* Footer */
+    .main-footer {
+      background-color: var(--dark-gray);
+      color: white;
+      padding: 15px 0;
+      text-align: center;
+      margin-top: auto;
+    }
+    
+    /* Animaciones */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .fade-in-up {
+      animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    .menu-card {
+      opacity: 0;
+      animation: fadeInUp 0.5s ease forwards;
+    }
+    
+    .menu-card:nth-child(1) { animation-delay: 0.1s; }
+    .menu-card:nth-child(2) { animation-delay: 0.2s; }
+    .menu-card:nth-child(3) { animation-delay: 0.3s; }
+    .menu-card:nth-child(4) { animation-delay: 0.4s; }
+    .menu-card:nth-child(5) { animation-delay: 0.5s; }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .welcome-title {
+        font-size: 1.8rem;
+      }
+      
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+      
+      .menu-card a {
+        padding: 20px 10px;
+      }
+      
+      .menu-icon {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .menu-icon i {
+        font-size: 28px;
+      }
+      
+      .menu-title {
+        font-size: 1.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar Principal -->
+  <header class="main-header">
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{{ url_for('dashboard') }}">
+          <div class="logo-circle">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          PepsiCo KPI System
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto">
+            <!-- Puedes agregar enlaces adicionales aquí si es necesario -->
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">
+                <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  
+  <!-- Contenido principal -->
+  <main class="dashboard-container">
+    <div class="container">
+      <div class="welcome-section fade-in-up">
+        <h1 class="welcome-title">Bienvenido al sistema de KPIs de PepsiCo</h1>
+        <p class="welcome-subtitle">Selecciona una opción para comenzar a gestionar la información de tu planta</p>
+      </div>
+      
+      <div class="dashboard-grid">
+        <!-- Opción 1: Carga de KPIs -->
+        <div class="menu-card">
+          <a href="{{ url_for('carga_kpis') }}">
+            <div class="menu-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="menu-title">Carga de KPI´s</h3>
+            <p class="menu-desc">Gestiona y visualiza los indicadores clave de rendimiento mensual</p>
+          </a>
+        </div>
+        
+        <!-- Opción 2: Layout de Planta -->
+        <div class="menu-card">
+          <a href="{{ url_for('lay_out_planta') }}">
+            <div class="menu-icon">
+              <i class="fas fa-industry"></i>
+            </div>
+            <h3 class="menu-title">LayOut de Planta</h3>
+            <p class="menu-desc">Configura la distribución y equipos de tu planta</p>
+          </a>
+        </div>
+        
+        <!-- Opción 3: Cajas -->
+        <div class="menu-card">
+          <a href="{{ url_for('cajas') }}">
+            <div class="menu-icon">
+              <i class="fas fa-box"></i>
+            </div>
+            <h3 class="menu-title">Cajas</h3>
+            <p class="menu-desc">Administra el inventario y configuración de cajas</p>
+          </a>
+        </div>
+        
+        <!-- Opción 4: Contactos -->
+        <div class="menu-card">
+          <a href="{{ url_for('contactos') }}">
+            <div class="menu-icon">
+              <i class="fas fa-address-book"></i>
+            </div>
+            <h3 class="menu-title">Contactos</h3>
+            <p class="menu-desc">Gestiona la información de contactos relevantes</p>
+          </a>
+        </div>
+        
+        <!-- Opción 5: Configuración -->
+        <div class="menu-card">
+          <a href="{{ url_for('configuracion') }}">
+            <div class="menu-icon">
+              <i class="fas fa-cog"></i>
+            </div>
+            <h3 class="menu-title">Configuración</h3>
+            <p class="menu-desc">Personaliza las configuraciones del sistema</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <footer class="main-footer">
+    <div class="container">
+      <p class="mb-0">&copy; 2025 PepsiCo, Inc. Sistema de Gestión de KPI para Plantas</p>
+    </div>
+  </footer>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1287,6 +1287,15 @@ def actualizar_linea_planta(linea_id):
     db.session.commit()
     return jsonify({'success': True, 'id': linea.id})
 
+# ELIMINA ESTE SEGUNDO BLOQUE DUPLICADO
+# @app.route('/actualizar_linea_planta/<int:linea_id>', methods=['PUT'])
+# def actualizar_linea_planta(linea_id):
+#     data = request.get_json()
+#     linea = LineaPlanta.query.get(linea_id)
+#     if not linea:
+#         return jsonify({'success': False, 'error': 'Línea no encontrada'})
+#     ...
+
 @app.route('/borrar_linea_planta/<int:linea_id>', methods=['DELETE'])
 def borrar_linea_planta(linea_id):
     linea = LineaPlanta.query.get(linea_id)
